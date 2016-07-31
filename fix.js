@@ -31,6 +31,7 @@
 		,transport: "Transport"
 		,outdoors: "Outdoors"
 		,mtbmap: "mtbmap.cz"
+		,mapycz: "mapy.cz"
 		,googlesatellite: "Google Satellite"
 		,googleroadmap: "Google Road Map"
 		,googlehybrid: "Google Hybrid"
@@ -64,6 +65,7 @@
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="transport">Transport</a></li>'));
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="outdoors">Outdoors</a></li>'));
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="mtbmap">mtbmap.cz</a></li>'));
+	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="mapycz">mapy.cz</a></li>'));
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googlesatellite">Google Satellite</a></li>'));
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googleroadmap">Google Road Map</a></li>'));
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googlehybrid">Google Hybrid</a></li>'));
@@ -72,6 +74,7 @@
 	var osmAttr = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
 	var thunderforestAttr = osmAttr + ', Tiles courtesy of <a href="http://www.thunderforest.com/" target="_blank">Andy Allan</a>';
 	var mtbMapAttr = osmAttr + ', Tiles courtesy of <a href="http://mtbmap.cz/" target="_blank">mtbmap.cz</a>';
+	var mapyCzAttr = '&copy; Seznam.cz, a.s, ' + osmAttr;
 	function createOpenStreetMapLayer() {
 		return L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution: osmAttr});
 	}
@@ -88,6 +91,10 @@
 	function createMtbMapLayer() {
 		return L.tileLayer("http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png", {attribution: mtbMapAttr});
 	}
+	function createMapyCzLayer() {
+		return L.tileLayer("http://m{s}.mapserver.mapy.cz/turist_trail_bike-m/{z}-{x}-{y}",
+			{minZoom: 5, maxZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
+	}
 
 	var once = true;
 	Strava.Maps.Mapbox.CustomControlView.prototype.changeMapType = function(t){
@@ -102,6 +109,7 @@
 			map.layers.transport = createTransportLayer();
 			map.layers.outdoors = createOutdoorsLayer();
 			map.layers.mtbmap = createMtbMapLayer();
+			map.layers.mapycz = createMapyCzLayer();
 			google.load("maps", "3.9", {"other_params":"sensor=false&libraries=geometry,places&client=gme-stravainc1", callback: function(){
 				jQuery.getScript('https://cdn.rawgit.com/shramov/leaflet-plugins/master/layer/tile/Google.js').done(function() {
 					map.layers.googlesatellite = new L.Google('SATELLITE');
