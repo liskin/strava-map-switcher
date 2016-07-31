@@ -19,23 +19,7 @@
 (function(){
 	Strava.Maps.Mapbox.Base.mapIds.runbikehike_id = "mapbox.run-bike-hike";
 
-	Strava.Maps.Mapbox.CustomControlView.prototype.mapTypeIdMap = function(t){
-		var e;
-		return(
-			e=
-				{terrain:"terrain"
-				,standard:"standard"
-				,satellite:"satellite"
-				,runbikehike:"runbikehike"
-				,openstreetmap:"openstreetmap"
-				,opencyclemap:"opencyclemap"
-				,transport:"transport"
-				,outdoors:"outdoors"
-				,mtbmap:"mtbmap"
-				},
-			e[t]
-		);
-	};
+	Strava.Maps.Mapbox.CustomControlView.prototype.mapTypeIdMap = function(t){return t};
 
 	var layerNames =
 		{terrain: Strava.I18n.Locale.t("strava.maps.google.custom_control.terrain")
@@ -47,6 +31,10 @@
 		,transport: "Transport"
 		,outdoors: "Outdoors"
 		,mtbmap: "mtbmap.cz"
+		,googlesatellite: "Google Satellite"
+		,googleroadmap: "Google Road Map"
+		,googlehybrid: "Google Hybrid"
+		,googleterrain: "Google Terrain"
 		};
 
 	Strava.Maps.CustomControlView.prototype.handleMapTypeSelector = function(t) {
@@ -76,6 +64,10 @@
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="transport">Transport</a></li>'));
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="outdoors">Outdoors</a></li>'));
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="mtbmap">mtbmap.cz</a></li>'));
+	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googlesatellite">Google Satellite</a></li>'));
+	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googleroadmap">Google Road Map</a></li>'));
+	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googlehybrid">Google Hybrid</a></li>'));
+	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googleterrain">Google Terrain</a></li>'));
 
 	var osmAttr = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
 	var thunderforestAttr = osmAttr + ', Tiles courtesy of <a href="http://www.thunderforest.com/" target="_blank">Andy Allan</a>';
@@ -103,12 +95,22 @@
 
 		if (once) {
 			once = false;
+
 			map.layers.runbikehike = map.createLayer("run-bike-hike");
 			map.layers.openstreetmap = createOpenStreetMapLayer();
 			map.layers.opencyclemap = createOpenCycleMapLayer();
 			map.layers.transport = createTransportLayer();
 			map.layers.outdoors = createOutdoorsLayer();
 			map.layers.mtbmap = createMtbMapLayer();
+			google.load("maps", "3.9", {"other_params":"sensor=false&libraries=geometry,places&client=gme-stravainc1", callback: function(){
+				jQuery.getScript('https://cdn.rawgit.com/shramov/leaflet-plugins/master/layer/tile/Google.js').done(function() {
+					map.layers.googlesatellite = new L.Google('SATELLITE');
+					map.layers.googleroadmap = new L.Google('ROADMAP');
+					map.layers.googlehybrid = new L.Google('HYBRID');
+					map.layers.googleterrain = new L.Google('TERRAIN');
+				});
+			}});
+
 			this.delegateEvents();
 		}
 
