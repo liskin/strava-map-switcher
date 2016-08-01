@@ -100,8 +100,11 @@
 			{minZoom: 2, maxZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
 	}
 	function createMapyCzBingLayer() {
-		return L.tileLayer("http://m{s}.mapserver.mapy.cz/bing/{z}-{x}-{y}",
+		var bing = L.tileLayer("http://m{s}.mapserver.mapy.cz/bing/{z}-{x}-{y}",
 			{minZoom: 2, maxZoom: 20, subdomains: "1234", attribution: mapyCzAttr});
+		var overlay = L.tileLayer("http://m{s}.mapserver.mapy.cz/hybrid-trail_bike-m/{z}-{x}-{y}",
+			{minZoom: 2, maxZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
+		return L.layerGroup([bing, overlay]);
 	}
 
 	var once = true;
