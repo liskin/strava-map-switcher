@@ -34,6 +34,7 @@
 		,outdoors: "Outdoors"
 		,mtbmap: "mtbmap.cz"
 		,mapycz: "mapy.cz"
+		,mapyczbing: "mapy.cz Aerial"
 		,googlesatellite: "Google Satellite"
 		,googleroadmap: "Google Road Map"
 		,googlehybrid: "Google Hybrid"
@@ -68,6 +69,7 @@
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="outdoors">Outdoors</a></li>'));
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="mtbmap">mtbmap.cz</a></li>'));
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="mapycz">mapy.cz</a></li>'));
+	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="mapyczbing">mapy.cz Aerial</a></li>'));
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googlesatellite">Google Satellite</a></li>'));
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googleroadmap">Google Road Map</a></li>'));
 	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googlehybrid">Google Hybrid</a></li>'));
@@ -94,8 +96,12 @@
 		return L.tileLayer("http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png", {attribution: mtbMapAttr});
 	}
 	function createMapyCzLayer() {
-		return L.tileLayer("http://m{s}.mapserver.mapy.cz/turist_trail_bike-m/{z}-{x}-{y}",
-			{minZoom: 5, maxZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
+		return L.tileLayer("http://m{s}.mapserver.mapy.cz/wturist-m/{z}-{x}-{y}",
+			{minZoom: 2, maxZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
+	}
+	function createMapyCzBingLayer() {
+		return L.tileLayer("http://m{s}.mapserver.mapy.cz/bing/{z}-{x}-{y}",
+			{minZoom: 2, maxZoom: 20, subdomains: "1234", attribution: mapyCzAttr});
 	}
 
 	var once = true;
@@ -112,6 +118,7 @@
 			map.layers.outdoors = createOutdoorsLayer();
 			map.layers.mtbmap = createMtbMapLayer();
 			map.layers.mapycz = createMapyCzLayer();
+			map.layers.mapyczbing = createMapyCzBingLayer();
 			google.load("maps", "3.9", {"other_params":"sensor=false&libraries=geometry,places&client=gme-stravainc1", callback: function(){
 				jQuery.getScript('https://cdn.rawgit.com/shramov/leaflet-plugins/master/layer/tile/Google.js').done(function() {
 					map.layers.googlesatellite = new L.Google('SATELLITE');
