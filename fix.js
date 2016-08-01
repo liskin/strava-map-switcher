@@ -96,13 +96,13 @@
 		return L.tileLayer("http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png", {attribution: mtbMapAttr});
 	}
 	function createMapyCzLayer() {
-		return L.tileLayer("http://m{s}.mapserver.mapy.cz/wturist-m/{z}-{x}-{y}",
+		return L.tileLayer("https://m{s}.mapserver.mapy.cz/wturist-m/{z}-{x}-{y}",
 			{minZoom: 2, maxZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
 	}
 	function createMapyCzBingLayer() {
-		var bing = L.tileLayer("http://m{s}.mapserver.mapy.cz/bing/{z}-{x}-{y}",
+		var bing = L.tileLayer("https://m{s}.mapserver.mapy.cz/bing/{z}-{x}-{y}",
 			{minZoom: 2, maxZoom: 20, subdomains: "1234", attribution: mapyCzAttr});
-		var overlay = L.tileLayer("http://m{s}.mapserver.mapy.cz/hybrid-trail_bike-m/{z}-{x}-{y}",
+		var overlay = L.tileLayer("https://m{s}.mapserver.mapy.cz/hybrid-trail_bike-m/{z}-{x}-{y}",
 			{minZoom: 2, maxZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
 		return L.layerGroup([bing, overlay]);
 	}
