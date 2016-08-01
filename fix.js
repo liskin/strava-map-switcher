@@ -5,7 +5,7 @@
  *
  * BOOKMARKLET:
  *
- *  javascript:jQuery('body').append(jQuery("<script src='https://rawgit.com/liskin/strava-map-switcher/master/fix.js'></script>"))
+ *  javascript:jQuery('body').append(jQuery("<script src='https://rawgit.com/liskin/strava-map-switcher/master/fix.js'></script>"));void(0);
  *
  * LICENSE:
  *
