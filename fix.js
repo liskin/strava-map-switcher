@@ -19,8 +19,6 @@
 (function(){
 	Strava.Maps.Mapbox.Base.mapIds.runbikehike_id = "mapbox.run-bike-hike";
 
-	Strava.Maps.Mapbox.CustomControlView.prototype.mapTypeIdMap = function(t){return t};
-
 	var layerNames =
 		{terrain: Strava.I18n.Locale.t("strava.maps.google.custom_control.terrain")
 		,standard: Strava.I18n.Locale.t("strava.maps.google.custom_control.standard")
@@ -122,7 +120,7 @@
 			this.delegateEvents();
 		}
 
-		return map.setLayer(this.mapTypeIdMap(t));
+		return map.setLayer(t);
 	};
 
 	// make sure delegateEvents is run at least once
