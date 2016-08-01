@@ -17,6 +17,10 @@
  */
 
 (function(){
+	if (!document.getElementById("map-type-control")) {
+		return;
+	}
+
 	Strava.Maps.Mapbox.Base.mapIds.runbikehike_id = "mapbox.run-bike-hike";
 
 	var layerNames =

@@ -1,0 +1,20 @@
+{
+  "name": "strava-map-switcher",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Map switcher for Strava website",
+  "homepage_url": "https://github.com/liskin/strava-map-switcher",
+  "permissions": [
+    "https://www.strava.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.strava.com/*"
+      ],
+      "js": [
+        "inject.js"
+      ]
+    }
+  ]
+}
