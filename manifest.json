@@ -1,6 +1,6 @@
 {
   "name": "strava-map-switcher",
-  "version": "0.0.1",
+  "version": "0.1",
   "manifest_version": 2,
   "description": "Map switcher for Strava website",
   "homepage_url": "https://github.com/liskin/strava-map-switcher",
