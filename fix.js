@@ -57,25 +57,19 @@
 		);
 	};
 
-	function htmlToElement(html) {
-		var template = document.createElement('template');
-		template.innerHTML = html;
-		return template.content.firstChild;
-	}
-
-	var opts = document.getElementById("map-type-control").getElementsByClassName("options")[0];
-	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="runbikehike">Run/Bike/Hike</a></li>'));
-	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="openstreetmap">OpenStreetMap</a></li>'));
-	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="opencyclemap">OpenCycleMap</a></li>'));
-	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="transport">Transport</a></li>'));
-	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="outdoors">Outdoors</a></li>'));
-	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="mtbmap">mtbmap.cz</a></li>'));
-	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="mapycz">mapy.cz</a></li>'));
-	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="mapyczbing">mapy.cz Aerial</a></li>'));
-	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googlesatellite">Google Satellite</a></li>'));
-	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googleroadmap">Google Road Map</a></li>'));
-	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googlehybrid">Google Hybrid</a></li>'));
-	opts.appendChild(htmlToElement('<li><a class="map-type-selector" data-map-type-id="googleterrain">Google Terrain</a></li>'));
+	var opts = jQuery('#map-type-control .options');
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="runbikehike">Run/Bike/Hike</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="openstreetmap">OpenStreetMap</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="opencyclemap">OpenCycleMap</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="transport">Transport</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="outdoors">Outdoors</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="mtbmap">mtbmap.cz</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="mapycz">mapy.cz</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="mapyczbing">mapy.cz Aerial</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googlesatellite">Google Satellite</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googleroadmap">Google Road Map</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googlehybrid">Google Hybrid</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googleterrain">Google Terrain</a></li>'));
 
 	var osmAttr = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
 	var thunderforestAttr = osmAttr + ', Tiles courtesy of <a href="http://www.thunderforest.com/" target="_blank">Andy Allan</a>';
@@ -142,7 +136,7 @@
 	};
 
 	// make sure delegateEvents is run at least once
-	opts.children[0].children[0].click();
-	opts.classList.remove("open-menu");
-	opts.parentElement.classList.remove("active");
+	opts.find(':first a').click();
+	opts.removeClass("open-menu");
+	opts.parent().removeClass("active");
 })()
