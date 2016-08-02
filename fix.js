@@ -93,7 +93,8 @@
 		return L.tileLayer("https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png", {attribution: thunderforestAttr});
 	}
 	function createMtbMapLayer() {
-		return L.tileLayer("http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png", {attribution: mtbMapAttr});
+		return L.tileLayer("http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png",
+			{minZoom: 3, maxZoom: 18, attribution: mtbMapAttr});
 	}
 	function createMapyCzLayer() {
 		return L.tileLayer("https://m{s}.mapserver.mapy.cz/wturist-m/{z}-{x}-{y}",
