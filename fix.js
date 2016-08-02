@@ -143,4 +143,6 @@
 
 	// make sure delegateEvents is run at least once
 	opts.children[0].children[0].click();
+	opts.classList.remove("open-menu");
+	opts.parentElement.classList.remove("active");
 })()
