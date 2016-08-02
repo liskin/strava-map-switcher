@@ -24,5 +24,6 @@ document.arrive("#map-type-control", {onceOnly: false, existing: true}, function
 	var s = document.createElement("script");
 	s.src = chrome.extension.getURL('fix.js');
 	s.type = 'text/javascript';
+	s.dataset.googleJsUrl = chrome.extension.getURL('Google.js');
 	document.body.appendChild(s);
 });

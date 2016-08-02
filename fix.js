@@ -21,6 +21,8 @@
 		return;
 	}
 
+	var thisScript = document.currentScript;
+
 	Strava.Maps.Mapbox.Base.mapIds.runbikehike_id = "mapbox.run-bike-hike";
 
 	var layerNames =
@@ -124,7 +126,8 @@
 			map.layers.mapycz = createMapyCzLayer();
 			map.layers.mapyczbing = createMapyCzBingLayer();
 			google.load("maps", "3.9", {"other_params":"sensor=false&libraries=geometry,places&client=gme-stravainc1", callback: function(){
-				jQuery.getScript('https://cdn.rawgit.com/shramov/leaflet-plugins/master/layer/tile/Google.js').done(function() {
+				//'https://cdn.rawgit.com/shramov/leaflet-plugins/master/layer/tile/Google.js'
+				jQuery.getScript(thisScript.dataset.googleJsUrl).done(function() {
 					map.layers.googlesatellite = new L.Google('SATELLITE');
 					map.layers.googleroadmap = new L.Google('ROADMAP');
 					map.layers.googlehybrid = new L.Google('HYBRID');
