@@ -10,6 +10,5 @@ Adds additional maps to Strava.com:
 
 ## Installation
 
-Download [here](https://github.com/liskin/strava-map-switcher/releases). Google
-Chrome: open chrome://extensions/ and drag the .crx file from a file manager
-into chrome.
+ - [Chrome Web Store](https://chrome.google.com/webstore/detail/strava-map-switcher/djcheclpmmkcdkjcenfamalobdenmici)
+ - [Firefox Addons](https://addons.mozilla.org/cs/firefox/addon/strava-map-switcher/)
