@@ -132,11 +132,22 @@
 			this.delegateEvents();
 		}
 
+		localStorage.stravaMapSwitcherPreferred = t;
 		return map.setLayer(t);
 	};
+
+	var preferredMap = localStorage.stravaMapSwitcherPreferred;
 
 	// make sure delegateEvents is run at least once
 	opts.find(':first a').click();
 	opts.removeClass("open-menu");
 	opts.parent().removeClass("active");
+
+	// select preferred map type
+	if (preferredMap) {
+		var mapLinks = opts.find('a.map-type-selector');
+		mapLinks.filter((_, e) => jQuery(e).data("map-type-id") === preferredMap).click();
+		opts.removeClass("open-menu");
+		opts.parent().removeClass("active");
+	}
 })()
