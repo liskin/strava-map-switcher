@@ -74,7 +74,7 @@
 	var osmAttr = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
 	var thunderforestAttr = osmAttr + ', Tiles courtesy of <a href="http://www.thunderforest.com/" target="_blank">Andy Allan</a>';
 	var mtbMapAttr = osmAttr + ', Tiles courtesy of <a href="http://mtbmap.cz/" target="_blank">mtbmap.cz</a>';
-	var mapyCzAttr = '&copy; Seznam.cz, a.s, ' + osmAttr;
+	var mapyCzAttr = '&copy; <a href="https://www.seznam.cz/">Seznam.cz, a.s</a>, ' + osmAttr;
 	function createOpenStreetMapLayer() {
 		return L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution: osmAttr});
 	}
