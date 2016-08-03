@@ -129,6 +129,7 @@
 				});
 			}});
 
+			// this is needed for the right handleMapTypeSelector to be called
 			this.delegateEvents();
 		}
 
