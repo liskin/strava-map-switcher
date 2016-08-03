@@ -16,3 +16,9 @@ document.arrive("#map-type-control", {onceOnly: false, existing: true}, function
 	s.dataset.googleJsUrl = chrome.extension.getURL('Google.js');
 	document.body.appendChild(s);
 });
+document.arrive(".gm-style", {onceOnly: false, existing: true}, function(){
+	var s = document.createElement("script");
+	s.src = chrome.extension.getURL('fix_google.js');
+	s.type = 'text/javascript';
+	document.body.appendChild(s);
+});
