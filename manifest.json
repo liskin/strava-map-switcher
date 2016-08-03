@@ -13,6 +13,7 @@
         "https://www.strava.com/*"
       ],
       "js": [
+        "arrive.min.js",
         "inject.js"
       ]
     }
