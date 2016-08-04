@@ -12,12 +12,18 @@
 
 var FixGoogleScript = document.currentScript;
 jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
-	function tileLayer(name, url, opts) {
-		var minZoom = opts.minZoom || 0;
-		var maxZoom = opts.maxNativeZoom || opts.maxZoom || 18;
-		var tileSize = opts.tileSize || 256;
-		var subdomains = opts.subdomains || "abc";
-		url = url.replace(/{/g, '{{').replace(/}/g, '}}');
+	var overlays = {};
+
+	function tileLayer(l) {
+		if (l.overlay) {
+			overlays["x-" + l.type] = tileLayer(l.overlay);
+		}
+
+		var minZoom = l.opts.minZoom || 0;
+		var maxZoom = l.opts.maxNativeZoom || l.opts.maxZoom || 18;
+		var tileSize = l.opts.tileSize || 256;
+		var subdomains = l.opts.subdomains || "abc";
+		var url = l.url.replace(/{/g, '{{').replace(/}/g, '}}');
 		return new google.maps.ImageMapType({
 			getTileUrl: function(coord, zoom) {
 				var r = Strava.Maps.Google.Overlays.Overlay.getNormalizedCoordinates(coord, zoom);
@@ -30,7 +36,6 @@ jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
 				}
 			},
 			tileSize: new google.maps.Size(tileSize, tileSize),
-			name: name,
 			opacity: 1,
 			maxZoom: maxZoom,
 			minZoom: minZoom
@@ -46,11 +51,15 @@ jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
 			if (once) {
 				once = false;
 
-				AdditionalMapLayers.forEach(l => g.mapTypes.set("x-" + l.type, tileLayer("x-" + l.type, l.url, l.opts)));
+				AdditionalMapLayers.forEach(l => g.mapTypes.set("x-" + l.type, tileLayer(l)));
 			}
 
+			g.overlayMapTypes.clear();
 			if (t.startsWith("x-")) {
-				return this.map.google.setMapTypeId(t);
+				if (overlays[t]) {
+					g.overlayMapTypes.push(overlays[t]);
+				}
+				return g.setMapTypeId(t);
 			} else {
 				return old_setMapStyle.call(this, t);
 			}
