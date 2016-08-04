@@ -76,31 +76,35 @@
 	var mtbMapAttr = osmAttr + ', Tiles courtesy of <a href="http://mtbmap.cz/" target="_blank">mtbmap.cz</a>';
 	var mapyCzAttr = '&copy; <a href="https://www.seznam.cz/" target="_blank">Seznam.cz, a.s</a>, ' + osmAttr;
 	function createOpenStreetMapLayer() {
-		return L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution: osmAttr});
+		return L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+			{maxZoom: 20, maxNativeZoom: 19, attribution: osmAttr});
 	}
 	function createOpenCycleMapLayer() {
 		//return L.tileLayer("http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png", {attribution: ""});
-		return L.tileLayer("https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png", {attribution: thunderforestAttr});
+		return L.tileLayer("https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
+			{maxZoom: 20, attribution: thunderforestAttr});
 	}
 	function createTransportLayer() {
-		return L.tileLayer("https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png", {attribution: thunderforestAttr});
+		return L.tileLayer("https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png",
+			{maxZoom: 20, attribution: thunderforestAttr});
 	}
 	function createOutdoorsLayer() {
-		return L.tileLayer("https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png", {attribution: thunderforestAttr});
+		return L.tileLayer("https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png",
+			{maxZoom: 20, attribution: thunderforestAttr});
 	}
 	function createMtbMapLayer() {
 		return L.tileLayer("http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png",
-			{minZoom: 3, maxZoom: 18, attribution: mtbMapAttr});
+			{minZoom: 3, maxZoom: 20, maxNativeZoom: 18, attribution: mtbMapAttr});
 	}
 	function createMapyCzLayer() {
 		return L.tileLayer("https://m{s}.mapserver.mapy.cz/wturist-m/{z}-{x}-{y}",
-			{minZoom: 2, maxZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
+			{minZoom: 2, maxZoom: 20, maxNativeZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
 	}
 	function createMapyCzBingLayer() {
 		var bing = L.tileLayer("https://m{s}.mapserver.mapy.cz/bing/{z}-{x}-{y}",
 			{minZoom: 2, maxZoom: 20, subdomains: "1234", attribution: mapyCzAttr});
 		var overlay = L.tileLayer("https://m{s}.mapserver.mapy.cz/hybrid-trail_bike-m/{z}-{x}-{y}",
-			{minZoom: 2, maxZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
+			{minZoom: 2, maxZoom: 20, maxNativeZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
 		return L.layerGroup([bing, overlay]);
 	}
 
