@@ -14,6 +14,29 @@ var FixGoogleScript = document.currentScript;
 jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
 	var overlays = {};
 
+	// Normalizes the coords that tiles repeat across the x axis (horizontally)
+	// like the standard Google map tiles.
+	function getNormalizedCoord(coord, zoom) {
+		var y = coord.y;
+		var x = coord.x;
+
+		// tile range in one direction range is dependent on zoom level
+		// 0 = 1 tile, 1 = 2 tiles, 2 = 4 tiles, 3 = 8 tiles, etc
+		var tileRange = 1 << zoom;
+
+		// don't repeat across y-axis (vertically)
+		if (y < 0 || y >= tileRange) {
+			return null;
+		}
+
+		// repeat across x-axis
+		if (x < 0 || x >= tileRange) {
+			x = (x % tileRange + tileRange) % tileRange;
+		}
+
+		return {x: x, y: y};
+	}
+
 	function tileLayer(l) {
 		if (l.overlay) {
 			overlays["x-" + l.type] = tileLayer(l.overlay);
@@ -26,7 +49,7 @@ jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
 		var url = l.url.replace(/{/g, '{{').replace(/}/g, '}}');
 		return new google.maps.ImageMapType({
 			getTileUrl: function(coord, zoom) {
-				var r = Strava.Maps.Google.Overlays.Overlay.getNormalizedCoordinates(coord, zoom);
+				var r = getNormalizedCoord(coord, zoom);
 				if (r) {
 					r.s = subdomains[(r.x + r.y) % subdomains.length];
 					r.z = zoom;
@@ -76,6 +99,49 @@ jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
 		var preferredMap = localStorage.stravaMapSwitcherRouteBuilderPreferred;
 		if (preferredMap) {
 			opts.children().filter((_, e) => jQuery(e).data("value") === preferredMap).click();
+		}
+	}
+
+	if (!window._stravaExplorer) {
+		var explorerScript = jQuery('body').children().filter((_, e) => e.innerHTML.includes("var stravaExplorer"))[0];
+		if (explorerScript) {
+			try {
+				eval(explorerScript.innerHTML.replace(/var stravaExplorer =/, 'var stravaExplorer = window._stravaExplorer =') + "\nconsole.log('ZZZ');")
+			} catch (e) {
+			};
+
+			var e = window._stravaExplorer;
+
+			AdditionalMapLayers.forEach(l => e.map.mapTypes.set("x-" + l.type, tileLayer(l)));
+
+			// reset map so it doesn't point in the middle of the ocean
+			jQuery("#segment-map-filters form").trigger("submit");
+			e.navigation.search();
+
+			function setMapType(t) {
+				localStorage.stravaMapSwitcherSegmentExplorerPreferred = t;
+				e.map.overlayMapTypes.clear();
+				if (overlays[t]) {
+					e.map.overlayMapTypes.push(overlays[t]);
+				}
+				return e.map.setMapTypeId(t);
+			}
+
+			var nav = jQuery('#segment-map-filters');
+			nav.css({height: 'auto'});
+			var clr = jQuery('<div>');
+			clr.css({clear: 'both', "margin-bottom": '1em'});
+			nav.append(clr);
+			AdditionalMapLayers.forEach(l => {
+				var b = jQuery("<div class='button btn-xs'>" + l.name + "</div>");
+				b.click(() => { setMapType("x-" + l.type); });
+				clr.append(b);
+			});
+
+			var preferredMap = localStorage.stravaMapSwitcherSegmentExplorerPreferred;
+			if (preferredMap) {
+				setTimeout(() => { setMapType(preferredMap); });
+			}
 		}
 	}
 });
