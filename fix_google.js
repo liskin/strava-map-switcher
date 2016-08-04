@@ -10,12 +10,14 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-(function(){
+var FixGoogleScript = document.currentScript;
+jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
 	function tileLayer(name, url, opts) {
 		var minZoom = opts.minZoom || 0;
-		var maxZoom = opts.maxZoom || 18;
+		var maxZoom = opts.maxNativeZoom || opts.maxZoom || 18;
 		var tileSize = opts.tileSize || 256;
 		var subdomains = opts.subdomains || "abc";
+		url = url.replace(/{/g, '{{').replace(/}/g, '}}');
 		return new google.maps.ImageMapType({
 			getTileUrl: function(coord, zoom) {
 				var r = Strava.Maps.Google.Overlays.Overlay.getNormalizedCoordinates(coord, zoom);
@@ -44,7 +46,7 @@
 			if (once) {
 				once = false;
 
-				g.mapTypes.set("x-opencyclemap", tileLayer("x-opencyclemap", "https://{{s}}.tile.thunderforest.com/cycle/{{z}}/{{x}}/{{y}}.png", {}));
+				AdditionalMapLayers.forEach(l => g.mapTypes.set("x-" + l.type, tileLayer("x-" + l.type, l.url, l.opts)));
 			}
 
 			if (t.startsWith("x-")) {
@@ -58,7 +60,7 @@
 	var opts = jQuery('#view-options li.map-style div.switches');
 	if (opts) {
 		opts.css({display: 'block', position: 'relative'});
-		opts.append(jQuery("<div class='button btn-xs' data-value='x-opencyclemap' tabindex='0'>OpenCycleMap</div>"));
+		AdditionalMapLayers.forEach(l => opts.append(jQuery("<div class='button btn-xs' data-value='x-" + l.type + "' tabindex='0'>" + l.name + "</div>")));
 		opts.children().css({display: 'block', width: '100%'});
 	}
-})()
+});

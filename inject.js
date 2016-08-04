@@ -14,11 +14,13 @@ document.arrive("#map-type-control", {onceOnly: false, existing: true}, function
 	s.src = chrome.extension.getURL('fix.js');
 	s.type = 'text/javascript';
 	s.dataset.googleJsUrl = chrome.extension.getURL('Google.js');
+	s.dataset.layersUrl = chrome.extension.getURL('layers.js');
 	document.body.appendChild(s);
 });
 document.arrive(".gm-style", {onceOnly: false, existing: true}, function(){
 	var s = document.createElement("script");
 	s.src = chrome.extension.getURL('fix_google.js');
 	s.type = 'text/javascript';
+	s.dataset.layersUrl = chrome.extension.getURL('layers.js');
 	document.body.appendChild(s);
 });

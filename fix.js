@@ -3,12 +3,6 @@
  *
  * Copyright © 2016 Tomáš Janoušek.
  *
- * BOOKMARKLET:
- *
- *  javascript:jQuery('body').append(jQuery("<script src='https://rawgit.com/liskin/strava-map-switcher/master/fix.js'></script>"));void(0);
- *
- * LICENSE:
- *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
@@ -16,12 +10,20 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-(function(){
+var FixScript = document.currentScript;
+jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 	if (!document.getElementById("map-type-control")) {
 		return;
 	}
 
-	var thisScript = document.currentScript;
+	function tileLayer(l) {
+		var r = L.tileLayer(l.url, l.opts);
+		if (l.overlay) {
+			var o = L.tileLayer(l.overlay.url, l.overlay.opts);
+			r = L.layerGroup([r, o]);
+		}
+		return r;
+	}
 
 	Strava.Maps.Mapbox.Base.mapIds.runbikehike_id = "mapbox.run-bike-hike";
 
@@ -30,18 +32,12 @@
 		,standard: Strava.I18n.Locale.t("strava.maps.google.custom_control.standard")
 		,satellite: Strava.I18n.Locale.t("strava.maps.google.custom_control.satellite")
 		,runbikehike: "Run/Bike/Hike"
-		,openstreetmap: "OpenStreetMap"
-		,opencyclemap: "OpenCycleMap"
-		,transport: "Transport"
-		,outdoors: "Outdoors"
-		,mtbmap: "mtbmap.cz"
-		,mapycz: "mapy.cz"
-		,mapyczbing: "mapy.cz Aerial"
 		,googlesatellite: "Google Satellite"
 		,googleroadmap: "Google Road Map"
 		,googlehybrid: "Google Hybrid"
 		,googleterrain: "Google Terrain"
 		};
+	AdditionalMapLayers.forEach(l => layerNames[l.type] = l.name);
 
 	Strava.Maps.CustomControlView.prototype.handleMapTypeSelector = function(t) {
 		var e, i, r;
@@ -57,57 +53,6 @@
 		);
 	};
 
-	var opts = jQuery('#map-type-control .options');
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="runbikehike">Run/Bike/Hike</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="openstreetmap">OpenStreetMap</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="opencyclemap">OpenCycleMap</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="transport">Transport</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="outdoors">Outdoors</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="mtbmap">mtbmap.cz</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="mapycz">mapy.cz</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="mapyczbing">mapy.cz Aerial</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googlesatellite">Google Satellite</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googleroadmap">Google Road Map</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googlehybrid">Google Hybrid</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googleterrain">Google Terrain</a></li>'));
-
-	var osmAttr = '&copy; <a href="http://openstreetmap.org" target="_blank">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/" target="_blank">CC-BY-SA</a>';
-	var thunderforestAttr = osmAttr + ', Tiles courtesy of <a href="http://www.thunderforest.com/" target="_blank">Andy Allan</a>';
-	var mtbMapAttr = osmAttr + ', Tiles courtesy of <a href="http://mtbmap.cz/" target="_blank">mtbmap.cz</a>';
-	var mapyCzAttr = '&copy; <a href="https://www.seznam.cz/" target="_blank">Seznam.cz, a.s</a>, ' + osmAttr;
-	function createOpenStreetMapLayer() {
-		return L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-			{maxZoom: 20, maxNativeZoom: 19, attribution: osmAttr});
-	}
-	function createOpenCycleMapLayer() {
-		//return L.tileLayer("http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png", {attribution: ""});
-		return L.tileLayer("https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
-			{maxZoom: 20, attribution: thunderforestAttr});
-	}
-	function createTransportLayer() {
-		return L.tileLayer("https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png",
-			{maxZoom: 20, attribution: thunderforestAttr});
-	}
-	function createOutdoorsLayer() {
-		return L.tileLayer("https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png",
-			{maxZoom: 20, attribution: thunderforestAttr});
-	}
-	function createMtbMapLayer() {
-		return L.tileLayer("http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png",
-			{minZoom: 3, maxZoom: 20, maxNativeZoom: 18, attribution: mtbMapAttr});
-	}
-	function createMapyCzLayer() {
-		return L.tileLayer("https://m{s}.mapserver.mapy.cz/wturist-m/{z}-{x}-{y}",
-			{minZoom: 2, maxZoom: 20, maxNativeZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
-	}
-	function createMapyCzBingLayer() {
-		var bing = L.tileLayer("https://m{s}.mapserver.mapy.cz/bing/{z}-{x}-{y}",
-			{minZoom: 2, maxZoom: 20, subdomains: "1234", attribution: mapyCzAttr});
-		var overlay = L.tileLayer("https://m{s}.mapserver.mapy.cz/hybrid-trail_bike-m/{z}-{x}-{y}",
-			{minZoom: 2, maxZoom: 20, maxNativeZoom: 18, subdomains: "1234", attribution: mapyCzAttr});
-		return L.layerGroup([bing, overlay]);
-	}
-
 	var once = true;
 	Strava.Maps.Mapbox.CustomControlView.prototype.changeMapType = function(t){
 		var map = this.map();
@@ -116,16 +61,10 @@
 			once = false;
 
 			map.layers.runbikehike = map.createLayer("run-bike-hike");
-			map.layers.openstreetmap = createOpenStreetMapLayer();
-			map.layers.opencyclemap = createOpenCycleMapLayer();
-			map.layers.transport = createTransportLayer();
-			map.layers.outdoors = createOutdoorsLayer();
-			map.layers.mtbmap = createMtbMapLayer();
-			map.layers.mapycz = createMapyCzLayer();
-			map.layers.mapyczbing = createMapyCzBingLayer();
+			AdditionalMapLayers.forEach(l => map.layers[l.type] = tileLayer(l));
 			google.load("maps", "3.9", {"other_params":"sensor=false&libraries=geometry,places&client=gme-stravainc1", callback: function(){
 				//'https://cdn.rawgit.com/shramov/leaflet-plugins/master/layer/tile/Google.js'
-				jQuery.getScript(thisScript.dataset.googleJsUrl).done(function() {
+				jQuery.getScript(FixScript.dataset.googleJsUrl).done(function() {
 					map.layers.googlesatellite = new L.Google('SATELLITE');
 					map.layers.googleroadmap = new L.Google('ROADMAP');
 					map.layers.googlehybrid = new L.Google('HYBRID');
@@ -143,6 +82,14 @@
 
 	var preferredMap = localStorage.stravaMapSwitcherPreferred;
 
+	var opts = jQuery('#map-type-control .options');
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="runbikehike">Run/Bike/Hike</a></li>'));
+	AdditionalMapLayers.forEach(l => opts.append(jQuery("<li><a class='map-type-selector' data-map-type-id='" + l.type + "'>" + l.name + "</a></li>")));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googlesatellite">Google Satellite</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googleroadmap">Google Road Map</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googlehybrid">Google Hybrid</a></li>'));
+	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googleterrain">Google Terrain</a></li>'));
+
 	// make sure delegateEvents is run at least once
 	opts.find(':first a').click();
 	opts.removeClass("open-menu");
@@ -155,4 +102,4 @@
 		opts.removeClass("open-menu");
 		opts.parent().removeClass("active");
 	}
-})()
+});
