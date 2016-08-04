@@ -12,10 +12,6 @@
 
 var FixScript = document.currentScript;
 jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
-	if (!document.getElementById("map-type-control")) {
-		return;
-	}
-
 	function tileLayer(l) {
 		var r = L.tileLayer(l.url, l.opts);
 		if (l.overlay) {
