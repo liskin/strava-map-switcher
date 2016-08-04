@@ -54,6 +54,7 @@ jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
 				AdditionalMapLayers.forEach(l => g.mapTypes.set("x-" + l.type, tileLayer(l)));
 			}
 
+			localStorage.stravaMapSwitcherRouteBuilderPreferred = t;
 			g.overlayMapTypes.clear();
 			if (t.startsWith("x-")) {
 				if (overlays[t]) {
@@ -71,5 +72,10 @@ jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
 		opts.css({display: 'block', position: 'relative'});
 		AdditionalMapLayers.forEach(l => opts.append(jQuery("<div class='button btn-xs' data-value='x-" + l.type + "' tabindex='0'>" + l.name + "</div>")));
 		opts.children().css({display: 'block', width: '100%'});
+
+		var preferredMap = localStorage.stravaMapSwitcherRouteBuilderPreferred;
+		if (preferredMap) {
+			opts.children().filter((_, e) => jQuery(e).data("value") === preferredMap).click();
+		}
 	}
 });
