@@ -9,18 +9,46 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-document.arrive("#map-type-control", {onceOnly: false, existing: true}, function(){
-	var s = document.createElement("script");
-	s.src = chrome.extension.getURL('fix.js');
-	s.type = 'text/javascript';
-	s.dataset.googleJsUrl = chrome.extension.getURL('Google.js');
-	s.dataset.layersUrl = chrome.extension.getURL('layers.js');
-	document.body.appendChild(s);
-});
-document.arrive(".gm-style", {onceOnly: false, existing: true}, function(){
-	var s = document.createElement("script");
-	s.src = chrome.extension.getURL('fix_google.js');
-	s.type = 'text/javascript';
-	s.dataset.layersUrl = chrome.extension.getURL('layers.js');
-	document.body.appendChild(s);
-});
+(function(){
+	var baseUrl = null;
+	if (document.currentScript) {
+		var m = document.currentScript.src.match("http.*/");
+		if (m) {
+			baseUrl = m;
+		}
+	}
+
+	function getURL(path) {
+		if (baseUrl) {
+			return baseUrl + path;
+		} else {
+			return chrome.extension.getURL(path);
+		}
+	}
+
+	function inject() {
+		document.arrive("#map-type-control", {onceOnly: false, existing: true}, function(){
+			var s = document.createElement("script");
+			s.src = getURL('fix.js');
+			s.type = 'text/javascript';
+			s.dataset.googleJsUrl = getURL('Google.js');
+			s.dataset.layersUrl = getURL('layers.js');
+			document.body.appendChild(s);
+		});
+		document.arrive(".gm-style", {onceOnly: false, existing: true}, function(){
+			var s = document.createElement("script");
+			s.src = getURL('fix_google.js');
+			s.type = 'text/javascript';
+			s.dataset.layersUrl = getURL('layers.js');
+			document.body.appendChild(s);
+		});
+	}
+
+	if (document.currentScript) {
+		jQuery.getScript(getURL('arrive.min.js')).done(function(){
+			inject();
+		});
+	} else {
+		inject();
+	}
+})();
