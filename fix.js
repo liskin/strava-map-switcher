@@ -42,9 +42,9 @@ jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 			r = e.data("map-type-id"),
 			i = this.$("#selected-map").data("map-type-id"),
 			e.data("map-type-id", i),
-			e.html(layerNames[i]),
+			e.text(layerNames[i]),
 			this.$("#selected-map").data("map-type-id", r),
-			this.$("#selected-map").html(layerNames[r]),
+			this.$("#selected-map").text(layerNames[r]),
 			this.changeMapType(r)
 		);
 	};
@@ -79,12 +79,16 @@ jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 	var preferredMap = localStorage.stravaMapSwitcherPreferred;
 
 	var opts = jQuery('#map-type-control .options');
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="runbikehike">Run/Bike/Hike</a></li>'));
-	AdditionalMapLayers.forEach(l => opts.append(jQuery("<li><a class='map-type-selector' data-map-type-id='" + l.type + "'>" + l.name + "</a></li>")));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googlesatellite">Google Satellite</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googleroadmap">Google Road Map</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googlehybrid">Google Hybrid</a></li>'));
-	opts.append(jQuery('<li><a class="map-type-selector" data-map-type-id="googleterrain">Google Terrain</a></li>'));
+	var optsToAdd = [];
+	optsToAdd.push(
+		{type: "runbikehike", name: "Run/Bike/Hike"});
+	AdditionalMapLayers.forEach(l => optsToAdd.push({type: l.type, name: l.name}));
+	optsToAdd.push(
+		{type: "googlesatellite", name: "Google Satellite"},
+		{type: "googleroadmap", name: "Google Road Map"},
+		{type: "googlehybrid", name: "Google Hybrid"},
+		{type: "googleterrain", name: "Google Terrain"});
+	optsToAdd.forEach(o => opts.append(jQuery('<li>').append(jQuery('<a class="map-type-selector">').data("map-type-id", o.type).text(o.name))));
 
 	// make sure delegateEvents is run at least once
 	opts.find(':first a').click();

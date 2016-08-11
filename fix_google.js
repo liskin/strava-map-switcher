@@ -93,7 +93,7 @@ jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
 	var opts = jQuery('#view-options li.map-style div.switches');
 	if (opts) {
 		opts.css({display: 'block', position: 'relative'});
-		AdditionalMapLayers.forEach(l => opts.append(jQuery("<div class='button btn-xs' data-value='x-" + l.type + "' tabindex='0'>" + l.name + "</div>")));
+		AdditionalMapLayers.forEach(l => opts.append(jQuery("<div class='button btn-xs' tabindex='0'>").data("value", "x-" + l.type).text(l.name)));
 		opts.children().css({display: 'block', width: '100%'});
 
 		var preferredMap = localStorage.stravaMapSwitcherRouteBuilderPreferred;
@@ -133,7 +133,7 @@ jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
 			clr.css({clear: 'both', "margin-bottom": '1em'});
 			nav.append(clr);
 			AdditionalMapLayers.forEach(l => {
-				var b = jQuery("<div class='button btn-xs'>" + l.name + "</div>");
+				var b = jQuery("<div class='button btn-xs'>").text(l.name);
 				b.click(() => { setMapType("x-" + l.type); });
 				clr.append(b);
 			});
