@@ -27,7 +27,7 @@
 	}
 
 	function inject() {
-		document.arrive("#map-type-control", {onceOnly: false, existing: true}, function(){
+		document.arrive(".leaflet-container", {onceOnly: false, existing: true}, function(){
 			var s = document.createElement("script");
 			s.src = getURL('fix.js');
 			s.type = 'text/javascript';

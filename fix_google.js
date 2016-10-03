@@ -101,47 +101,4 @@ jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
 			opts.children().filter((_, e) => jQuery(e).data("value") === preferredMap).click();
 		}
 	}
-
-	if (!window._stravaExplorer) {
-		var explorerScript = jQuery('body').children().filter((_, e) => e.innerHTML.includes("var stravaExplorer"))[0];
-		if (explorerScript) {
-			try {
-				eval(explorerScript.innerHTML.replace(/var stravaExplorer =/, 'var stravaExplorer = window._stravaExplorer =') + "\nconsole.log('ZZZ');")
-			} catch (e) {
-			};
-
-			var e = window._stravaExplorer;
-
-			AdditionalMapLayers.forEach(l => e.map.mapTypes.set("x-" + l.type, tileLayer(l)));
-
-			// reset map so it doesn't point in the middle of the ocean
-			jQuery("#segment-map-filters form").trigger("submit");
-			e.navigation.search();
-
-			function setMapType(t) {
-				localStorage.stravaMapSwitcherSegmentExplorerPreferred = t;
-				e.map.overlayMapTypes.clear();
-				if (overlays[t]) {
-					e.map.overlayMapTypes.push(overlays[t]);
-				}
-				return e.map.setMapTypeId(t);
-			}
-
-			var nav = jQuery('#segment-map-filters');
-			nav.css({height: 'auto'});
-			var clr = jQuery('<div>');
-			clr.css({clear: 'both', "margin-bottom": '1em'});
-			nav.append(clr);
-			AdditionalMapLayers.forEach(l => {
-				var b = jQuery("<div class='button btn-xs'>").text(l.name);
-				b.click(() => { setMapType("x-" + l.type); });
-				clr.append(b);
-			});
-
-			var preferredMap = localStorage.stravaMapSwitcherSegmentExplorerPreferred;
-			if (preferredMap) {
-				setTimeout(() => { setMapType(preferredMap); });
-			}
-		}
-	}
 });
