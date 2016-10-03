@@ -91,7 +91,7 @@ jQuery.getScript(FixGoogleScript.dataset.layersUrl).done(function(){
 	}
 
 	var opts = jQuery('#view-options li.map-style div.switches');
-	if (opts) {
+	if (opts.length) {
 		opts.css({display: 'block', position: 'relative'});
 		AdditionalMapLayers.forEach(l => opts.append(jQuery("<div class='button btn-xs' tabindex='0'>").data("value", "x-" + l.type).text(l.name)));
 		opts.children().css({display: 'block', width: '100%'});
