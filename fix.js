@@ -109,28 +109,15 @@ jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 		}
 	}
 
-	if (!window._stravaExplorer) {
-		var explorerScript = jQuery('script:contains("stravaExplorer = new Strava")');
-		if (explorerScript.length) {
-			// empty the map canvas so it can be reinitialized
-			var canvas = jQuery('#map_canvas');
-			canvas.empty();
-			canvas[0].outerHTML = canvas[0].outerHTML;
-
-			try {
-				// This script runs in the page's context, and the code comes from the page itself, so this is safe.
-				window.eval(explorerScript.text().replace(/var stravaExplorer =/, 'var stravaExplorer = window._stravaExplorer ='));
-			} catch (e) {
-				console.error(e);
-			}
-
-			var e = window._stravaExplorer;
+	var explorerMapFilters = jQuery('#segment-map-filters form');
+	if (explorerMapFilters.length) {
+		var once = false;
+		function explorerFound(e) {
+			if (once)
+				return;
+			once = true;
 
 			addLayers(e.map);
-
-			// reset map so it doesn't point in the middle of the ocean
-			jQuery("#segment-map-filters form").trigger("submit");
-			e.navigation.search();
 
 			function setMapType(t) {
 				localStorage.stravaMapSwitcherSegmentExplorerPreferred = t;
@@ -157,10 +144,18 @@ jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 			addButton("Google Hybrid", "googlehybrid");
 			addButton("Google Terrain", "googleterrain");
 
-			var preferredMap = localStorage.stravaMapSwitcherSegmentExplorerPreferred;
+			var preferredMap = localStorage.stravaMapSwitcherPreferred;
 			if (preferredMap) {
 				setTimeout(() => { setMapType(preferredMap); });
 			}
 		}
+
+		var old_navigate = Strava.Explorer.Navigation.prototype.navigate;
+		Strava.Explorer.Navigation.prototype.navigate = function(){
+			old_navigate.call(this);
+			explorerFound(this.explorer);
+			Strava.Explorer.Navigation.prototype.navigate = old_navigate;
+		};
+		explorerMapFilters.trigger('submit');
 	}
 });
