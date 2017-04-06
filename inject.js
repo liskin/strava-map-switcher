@@ -35,13 +35,6 @@
 			s.dataset.layersUrl = getURL('layers.js');
 			document.body.appendChild(s);
 		});
-		document.arrive(".gm-style", {onceOnly: false, existing: true}, function(){
-			var s = document.createElement("script");
-			s.src = getURL('fix_google.js');
-			s.type = 'text/javascript';
-			s.dataset.layersUrl = getURL('layers.js');
-			document.body.appendChild(s);
-		});
 	}
 
 	if (document.currentScript) {
