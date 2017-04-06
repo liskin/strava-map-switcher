@@ -24,15 +24,17 @@ jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 	function addLayers(map) {
 		map.layers.runbikehike = map.createLayer("run-bike-hike");
 		AdditionalMapLayers.forEach(l => map.layers[l.type] = tileLayer(l));
-		google.load("maps", "3.9", {"other_params":"sensor=false&libraries=geometry,places&client=gme-stravainc1", callback: function(){
-			//'https://cdn.rawgit.com/shramov/leaflet-plugins/master/layer/tile/Google.js'
-			jQuery.getScript(FixScript.dataset.googleJsUrl).done(function() {
-				map.layers.googlesatellite = new L.Google('SATELLITE');
-				map.layers.googleroadmap = new L.Google('ROADMAP');
-				map.layers.googlehybrid = new L.Google('HYBRID');
-				map.layers.googleterrain = new L.Google('TERRAIN');
-			});
-		}});
+		if (window.google) {
+			window.google.load("maps", "3.9", {"other_params":"sensor=false&libraries=geometry,places&client=gme-stravainc1", callback: function(){
+				//'https://cdn.rawgit.com/shramov/leaflet-plugins/master/layer/tile/Google.js'
+				jQuery.getScript(FixScript.dataset.googleJsUrl).done(function() {
+					map.layers.googlesatellite = new L.Google('SATELLITE');
+					map.layers.googleroadmap = new L.Google('ROADMAP');
+					map.layers.googlehybrid = new L.Google('HYBRID');
+					map.layers.googleterrain = new L.Google('TERRAIN');
+				});
+			}});
+		}
 	}
 
 	Strava.Maps.Mapbox.Base.mapIds.runbikehike_id = "mapbox.run-bike-hike";
@@ -49,8 +51,8 @@ jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 		};
 	AdditionalMapLayers.forEach(l => layerNames[l.type] = l.name);
 
-	var opts = jQuery('#map-type-control .options');
-	if (opts.length) {
+	var activityOpts = jQuery('#map-type-control .options');
+	if (activityOpts.length) {
 		Strava.Maps.CustomControlView.prototype.handleMapTypeSelector = function(t) {
 			var e, i, r;
 			return(
@@ -91,21 +93,21 @@ jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 			{type: "googleroadmap", name: "Google Road Map"},
 			{type: "googlehybrid", name: "Google Hybrid"},
 			{type: "googleterrain", name: "Google Terrain"});
-		optsToAdd.forEach(o => opts.append(jQuery('<li>').append(jQuery('<a class="map-type-selector">').data("map-type-id", o.type).text(o.name))));
+		optsToAdd.forEach(o => activityOpts.append(jQuery('<li>').append(jQuery('<a class="map-type-selector">').data("map-type-id", o.type).text(o.name))));
 
 		var preferredMap = localStorage.stravaMapSwitcherPreferred;
 
 		// make sure delegateEvents is run at least once
-		opts.find(':first a').click();
-		opts.removeClass("open-menu");
-		opts.parent().removeClass("active");
+		activityOpts.find(':first a').click();
+		activityOpts.removeClass("open-menu");
+		activityOpts.parent().removeClass("active");
 
 		// select preferred map type
 		if (preferredMap) {
-			var mapLinks = opts.find('a.map-type-selector');
+			var mapLinks = activityOpts.find('a.map-type-selector');
 			mapLinks.filter((_, e) => jQuery(e).data("map-type-id") === preferredMap).click();
-			opts.removeClass("open-menu");
-			opts.parent().removeClass("active");
+			activityOpts.removeClass("open-menu");
+			activityOpts.parent().removeClass("active");
 		}
 	}
 
@@ -157,5 +159,39 @@ jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 			Strava.Explorer.Navigation.prototype.navigate = old_navigate;
 		};
 		explorerMapFilters.trigger('submit');
+	}
+
+	var routeBuilderOpts = jQuery('#view-options li.map-style div.switches');
+	if (routeBuilderOpts.length) {
+		var once = true;
+		Strava.Routes.MapViewOptionsView.prototype.setMapStyle = function(t){
+			var map = this.map;
+
+			if (once) {
+				once = false;
+
+				addLayers(map);
+			}
+
+			localStorage.stravaMapSwitcherPreferred = t;
+			return map.setLayer(t);
+		};
+
+		var preferredMap = localStorage.stravaMapSwitcherPreferred;
+
+		// change map so that our setMapStyle is called
+		routeBuilderOpts.find('div:last').click();
+
+		routeBuilderOpts.css({display: 'block', position: 'relative'});
+		AdditionalMapLayers.forEach(l =>
+			routeBuilderOpts.append(
+				jQuery("<div class='button btn-xs' tabindex='0'>").data("value", l.type).text(l.name)
+			)
+		);
+		routeBuilderOpts.children().css({display: 'block', width: '100%'});
+
+		if (preferredMap) {
+			routeBuilderOpts.children().filter((_, e) => jQuery(e).data("value") === preferredMap).click();
+		}
 	}
 });
