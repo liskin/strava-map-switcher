@@ -49,39 +49,39 @@ jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 		};
 	AdditionalMapLayers.forEach(l => layerNames[l.type] = l.name);
 
-	Strava.Maps.CustomControlView.prototype.handleMapTypeSelector = function(t) {
-		var e, i, r;
-		return(
-			e = this.$$(t.target),
-			r = e.data("map-type-id"),
-			i = this.$("#selected-map").data("map-type-id"),
-			e.data("map-type-id", i),
-			e.text(layerNames[i]),
-			this.$("#selected-map").data("map-type-id", r),
-			this.$("#selected-map").text(layerNames[r]),
-			this.changeMapType(r)
-		);
-	};
-
-	var once = true;
-	Strava.Maps.Mapbox.CustomControlView.prototype.changeMapType = function(t){
-		var map = this.map();
-
-		if (once) {
-			once = false;
-
-			addLayers(map);
-
-			// this is needed for the right handleMapTypeSelector to be called
-			this.delegateEvents();
-		}
-
-		localStorage.stravaMapSwitcherPreferred = t;
-		return map.setLayer(t);
-	};
-
 	var opts = jQuery('#map-type-control .options');
 	if (opts.length) {
+		Strava.Maps.CustomControlView.prototype.handleMapTypeSelector = function(t) {
+			var e, i, r;
+			return(
+				e = this.$$(t.target),
+				r = e.data("map-type-id"),
+				i = this.$("#selected-map").data("map-type-id"),
+				e.data("map-type-id", i),
+				e.text(layerNames[i]),
+				this.$("#selected-map").data("map-type-id", r),
+				this.$("#selected-map").text(layerNames[r]),
+				this.changeMapType(r)
+			);
+		};
+
+		var once = true;
+		Strava.Maps.Mapbox.CustomControlView.prototype.changeMapType = function(t){
+			var map = this.map();
+
+			if (once) {
+				once = false;
+
+				addLayers(map);
+
+				// this is needed for the right handleMapTypeSelector to be called
+				this.delegateEvents();
+			}
+
+			localStorage.stravaMapSwitcherPreferred = t;
+			return map.setLayer(t);
+		};
+
 		var optsToAdd = [];
 		optsToAdd.push(
 			{type: "runbikehike", name: "Run/Bike/Hike"});
