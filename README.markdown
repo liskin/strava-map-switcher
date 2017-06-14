@@ -12,7 +12,6 @@ Adds additional maps to Strava.com:
 
  - [Chrome Web Store](https://chrome.google.com/webstore/detail/strava-map-switcher/djcheclpmmkcdkjcenfamalobdenmici)
  - [Firefox Addons](https://addons.mozilla.org/cs/firefox/addon/strava-map-switcher/)
-   (still waiting for review, unfortunately)
  - [GreaseMonkey](https://rawgit.com/liskin/strava-map-switcher/master/greasemonkey.user.js)
 
 ## Bookmarklet
