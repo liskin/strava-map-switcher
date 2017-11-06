@@ -45,7 +45,7 @@ var AdditionalMapLayers = (function(){
 				{url: "https://m{s}.mapserver.mapy.cz/hybrid-trail_bike-m/{z}-{x}-{y}",
 					opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 18, subdomains: "1234", attribution: mapyCzAttr}}},
         {type: "zmcr", name: "Základní mapy ČR",
-            url: "http://ags.cuzk.cz/arcgis/rest/services/zmwm/MapServer/tile/{z}/{x}/{y}",
+            url: "http://ags.cuzk.cz/arcgis/rest/services/zmwm/MapServer/tile/{z}/{y}/{x}",
             opts: {minZoom: 7, maxZoom: 19, maxNativeZoom: 18, attribution: cuzkAttr}}
 	];
 })();
