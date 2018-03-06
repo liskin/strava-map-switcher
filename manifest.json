@@ -3,7 +3,7 @@
   "version": "0.9",
   "manifest_version": 2,
   "description": "Map switcher for Strava website",
-  "homepage_url": "https://github.com/liskin/strava-map-switcher",
+  "homepage_url": "https://github.com/xtonda/strava-map-switcher",
   "permissions": [
     "https://www.strava.com/*"
   ],
