@@ -30,7 +30,7 @@ var AdditionalMapLayers = (function(){
 		{type: "outdoors", name: "Outdoors",
 			url: "https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png",
 			opts: {maxZoom: 20, attribution: thunderforestAttr}},
-		{type: "kartverket", name: "Statens Kartverk",
+		{type: "kartverket", name: "Kartverket (Norway)",
 			url: "https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}",
 			opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 18, attribution: kartverketAttr}},
 		{type: "mtbmap", name: "mtbmap.cz",
