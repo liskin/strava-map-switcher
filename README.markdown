@@ -18,4 +18,4 @@ Adds additional maps to Strava.com:
 
 If you can't or don't want to use the addon/userscript, it works as a bookmarklet too:
 
-    javascript:jQuery('body').append(jQuery("<script src='https://rawgit.com/liskin/strava-map-switcher/master/inject.js'></script>"));void(0);
+    javascript:jQuery('body').append(jQuery("<script src='https://cdn.jsdelivr.net/gh/liskin/strava-map-switcher@master/inject.js'></script>"));void(0);
