@@ -20,7 +20,7 @@ var AdditionalMapLayers = (function(){
 	var kartverketAttr = '&copy; <a href="http://www.kartverket.no/">Kartverket</a>';
 	return [
 		{type: "openstreetmap", name: "OpenStreetMap",
-			url: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+			url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			opts: {maxZoom: 20, maxNativeZoom: 19, attribution: osmAttr}},
 		{type: "opencyclemap", name: "OpenCycleMap",
 			url: "https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
