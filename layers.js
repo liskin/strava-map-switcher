@@ -14,6 +14,7 @@ var AdditionalMapLayers = (function(){
 	var osmAttr = '&copy; <a href="http://openstreetmap.org" target="_blank">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/" target="_blank">CC-BY-SA</a>';
 	var thunderforestAttr = osmAttr + ', Tiles courtesy of <a href="http://www.thunderforest.com/" target="_blank">Andy Allan</a>';
 	var mtbMapAttr = osmAttr + ', Tiles courtesy of <a href="http://mtbmap.cz/" target="_blank">mtbmap.cz</a>';
+	var freeMapSkAttr = osmAttr + ', Tiles courtesy of <a href="http://freemap.sk/" target="_blank">freemap.sk</a>';
 	var mapyCzAttr = '&copy; <a href="https://www.seznam.cz/" target="_blank">Seznam.cz, a.s</a>, ' + osmAttr;
 	var cuzkAttr = '&copy; <a href="http://geoportal.cuzk.cz" target="_blank">ČÚZK</a>';
 	var kartverketAttr = '&copy; <a href="http://www.kartverket.no/">Kartverket</a>';
@@ -36,6 +37,9 @@ var AdditionalMapLayers = (function(){
 		{type: "mtbmap", name: "mtbmap.cz",
 			url: "http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png",
 			opts: {minZoom: 3, maxZoom: 20, maxNativeZoom: 18, attribution: mtbMapAttr}},
+		{type: "freemap.sk", name: "freemap.sk",
+			url: "https://outdoor.tiles.freemap.sk/{z}/{x}/{y}",
+			opts: {minZoom: 3, maxZoom: 20, maxNativeZoom: 19, attribution: freeMapSkAttr}},
 		{type: "mapycz", name: "mapy.cz",
 			url: "https://mapserver.mapy.cz/turist-m/{z}-{x}-{y}",
 			opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 18, attribution: mapyCzAttr}},
