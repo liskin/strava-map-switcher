@@ -22,5 +22,10 @@
     "fix.js",
     "Google.js",
     "layers.js"
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "strava-map-switcher@lisk.in"
+    }
+  }
 }
