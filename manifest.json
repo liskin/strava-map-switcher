@@ -4,6 +4,9 @@
   "manifest_version": 2,
   "description": "Map switcher for Strava website",
   "homepage_url": "https://github.com/liskin/strava-map-switcher",
+  "icons": {
+    "128": "icons/icon128.png"
+  },
   "permissions": [
     "https://www.strava.com/*"
   ],
