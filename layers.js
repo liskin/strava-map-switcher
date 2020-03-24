@@ -18,6 +18,7 @@ var AdditionalMapLayers = (function(){
 	var mapyCzAttr = '&copy; <a href="https://www.seznam.cz/" target="_blank">Seznam.cz, a.s</a>, ' + osmAttr;
 	var cuzkAttr = '&copy; <a href="http://geoportal.cuzk.cz" target="_blank">ČÚZK</a>';
 	var kartverketAttr = '&copy; <a href="http://www.kartverket.no/">Kartverket</a>';
+	var geoportailAttr = '&copy; <a href="https://www.geoportail.gouv.fr/">Geoportail</a>';
 	return [
 		{type: "openstreetmap", name: "OpenStreetMap",
 			url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -52,5 +53,8 @@ var AdditionalMapLayers = (function(){
 		{type: "zmcr", name: "Základní mapy ČR",
 			url: "http://ags.cuzk.cz/arcgis/rest/services/zmwm/MapServer/tile/{z}/{y}/{x}",
 			opts: {minZoom: 7, maxZoom: 20, maxNativeZoom: 18, attribution: cuzkAttr}},
+		{type: "geoportail", name: "Geoportail",
+			url: "https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=ORTHOIMAGERY.ORTHOPHOTOS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix={z}&TileCol={x}&TileRow={y}",
+			opts: {maxZoom: 20, maxNativeZoom: 19, attribution: geoportailAttr}},
 	];
 })();

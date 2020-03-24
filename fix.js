@@ -145,6 +145,7 @@ jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 			addButton("Google Road Map", "googleroadmap");
 			addButton("Google Hybrid", "googlehybrid");
 			addButton("Google Terrain", "googleterrain");
+			addButton("Geoportail", "geoportail");
 
 			var preferredMap = localStorage.stravaMapSwitcherPreferred;
 			if (preferredMap) {
