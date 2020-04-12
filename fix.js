@@ -10,8 +10,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-var FixScript = document.currentScript;
-jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
+document.arrive(".leaflet-container", {onceOnly: false, existing: true}, function () {
 	function tileLayer(l) {
 		var r = L.tileLayer(l.url, l.opts);
 		if (l.overlay) {
@@ -24,14 +23,10 @@ jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 	function addLayers(map) {
 		map.layers.runbikehike = map.createLayer("run-bike-hike");
 		AdditionalMapLayers.forEach(l => map.layers[l.type] = tileLayer(l));
-		jQuery.getScript("https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1").done(function () {
-			jQuery.getScript(FixScript.dataset.googleJsUrl).done(function () {
-				map.layers.googlesatellite = new L.Google('SATELLITE');
-				map.layers.googleroadmap = new L.Google('ROADMAP');
-				map.layers.googlehybrid = new L.Google('HYBRID');
-				map.layers.googleterrain = new L.Google('TERRAIN');
-			});
-		});
+		map.layers.googlesatellite = new L.Google('SATELLITE');
+		map.layers.googleroadmap = new L.Google('ROADMAP');
+		map.layers.googlehybrid = new L.Google('HYBRID');
+		map.layers.googleterrain = new L.Google('TERRAIN');
 	}
 
 	Strava.Maps.Mapbox.Base.mapIds.runbikehike_id = "mapbox.run-bike-hike";

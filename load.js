@@ -10,11 +10,22 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// ==UserScript==
-// @name strava-map-switcher
-// @description Map switcher for Strava website
-// @match https://www.strava.com/*
-// @downloadURL https://cdn.jsdelivr.net/gh/liskin/strava-map-switcher@master/greasemonkey.user.js
-// ==/UserScript==
+{
+	const baseUrl = document.currentScript.src.match("^[a-z-]+://.*/") + "";
+	const getURL = (path) => baseUrl + path;
 
-jQuery('body').append(jQuery("<script src='https://rawgit.com/liskin/strava-map-switcher/master/load.js'></script>"));
+	const ignoreError = function (deferred) {
+		const newDeferred = jQuery.Deferred();
+		deferred.always(newDeferred.resolve);
+		return newDeferred.promise();
+	};
+
+	jQuery.when(
+		jQuery.getScript(getURL('arrive.min.js')),
+		jQuery.getScript(getURL('layers.js')),
+		ignoreError(jQuery.getScript("https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1")).then(
+			() => jQuery.getScript(getURL('Google.js')).promise()),
+	).then(function () {
+		jQuery.getScript(getURL('fix.js'));
+	});
+}

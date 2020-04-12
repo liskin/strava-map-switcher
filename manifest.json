@@ -16,15 +16,16 @@
         "https://www.strava.com/*"
       ],
       "js": [
-        "arrive.min.js",
         "inject.js"
       ]
     }
   ],
   "web_accessible_resources": [
-    "fix.js",
     "Google.js",
-    "layers.js"
+    "arrive.min.js",
+    "fix.js",
+    "layers.js",
+    "load.js"
   ],
   "browser_specific_settings": {
     "gecko": {
