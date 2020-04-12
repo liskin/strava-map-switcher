@@ -10,16 +10,19 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-var AdditionalMapLayers = (function(){
-	var osmAttr = '&copy; <a href="http://openstreetmap.org" target="_blank">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/" target="_blank">CC-BY-SA</a>';
-	var thunderforestAttr = osmAttr + ', Tiles courtesy of <a href="http://www.thunderforest.com/" target="_blank">Andy Allan</a>';
-	var mtbMapAttr = osmAttr + ', Tiles courtesy of <a href="http://mtbmap.cz/" target="_blank">mtbmap.cz</a>';
-	var freeMapSkAttr = osmAttr + ', Tiles courtesy of <a href="http://freemap.sk/" target="_blank">freemap.sk</a>';
-	var mapyCzAttr = '&copy; <a href="https://www.seznam.cz/" target="_blank">Seznam.cz, a.s</a>, ' + osmAttr;
-	var cuzkAttr = '&copy; <a href="http://geoportal.cuzk.cz" target="_blank">ČÚZK</a>';
-	var kartverketAttr = '&copy; <a href="http://www.kartverket.no/">Kartverket</a>';
-	var geoportailAttr = '&copy; <a href="https://www.geoportail.gouv.fr/">Geoportail</a>';
-	return [
+var AdditionalMapLayers;
+
+{
+	const osmAttr = '&copy; <a href="http://openstreetmap.org" target="_blank">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/" target="_blank">CC-BY-SA</a>';
+	const thunderforestAttr = osmAttr + ', Tiles courtesy of <a href="http://www.thunderforest.com/" target="_blank">Andy Allan</a>';
+	const mtbMapAttr = osmAttr + ', Tiles courtesy of <a href="http://mtbmap.cz/" target="_blank">mtbmap.cz</a>';
+	const freeMapSkAttr = osmAttr + ', Tiles courtesy of <a href="http://freemap.sk/" target="_blank">freemap.sk</a>';
+	const mapyCzAttr = '&copy; <a href="https://www.seznam.cz/" target="_blank">Seznam.cz, a.s</a>, ' + osmAttr;
+	const cuzkAttr = '&copy; <a href="http://geoportal.cuzk.cz" target="_blank">ČÚZK</a>';
+	const kartverketAttr = '&copy; <a href="http://www.kartverket.no/">Kartverket</a>';
+	const geoportailAttr = '&copy; <a href="https://www.geoportail.gouv.fr/">Geoportail</a>';
+
+	AdditionalMapLayers = [
 		{type: "openstreetmap", name: "OpenStreetMap",
 			url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			opts: {maxZoom: 20, maxNativeZoom: 19, attribution: osmAttr}},
@@ -57,4 +60,4 @@ var AdditionalMapLayers = (function(){
 			url: "https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=ORTHOIMAGERY.ORTHOPHOTOS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix={z}&TileCol={x}&TileRow={y}",
 			opts: {maxZoom: 20, maxNativeZoom: 19, attribution: geoportailAttr}},
 	];
-})();
+}
