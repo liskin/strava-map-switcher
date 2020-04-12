@@ -14,7 +14,7 @@
 // @name strava-map-switcher
 // @description Map switcher for Strava website
 // @match https://www.strava.com/*
-// @downloadURL https://cdn.jsdelivr.net/gh/liskin/strava-map-switcher@master/inject.js
+// @downloadURL https://cdn.jsdelivr.net/gh/liskin/strava-map-switcher@master/greasemonkey.user.js
 // ==/UserScript==
 
 jQuery('body').append(jQuery("<script src='https://rawgit.com/liskin/strava-map-switcher/master/inject.js'></script>"));
