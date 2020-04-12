@@ -1,4 +1,4 @@
-// https://github.com/shramov/leaflet-plugins/blob/master/layer/tile/Google.js
+// https://raw.githubusercontent.com/shramov/leaflet-plugins/f387ce1ec9f85f7e6558fd3dd7a6baff4e31a6b3/layer/tile/Google.js
 // MIT licensed
 
 /*
@@ -27,35 +27,49 @@ L.Google = L.Class.extend({
 
 	// Possible types: SATELLITE, ROADMAP, HYBRID, TERRAIN
 	initialize: function (type, options) {
+		var _this = this;
+
+		this._ready = L.Google.isGoogleMapsReady();
+
 		L.Util.setOptions(this, options);
 
-		this._ready = google.maps.Map !== undefined;
-		if (!this._ready) L.Google.asyncWait.push(this);
+		this._googleApiPromise = this._ready ? Promise.resolve(window.google) : L.Google.createGoogleApiPromise();
+
+		this._googleApiPromise
+		.then(function () {
+			_this._ready = true;
+			_this._initMapObject();
+			_this._update();
+		});
 
 		this._type = type || 'SATELLITE';
 	},
 
 	onAdd: function (map, insertAtTheBottom) {
-		this._map = map;
-		this._insertAtTheBottom = insertAtTheBottom;
+		var _this = this;
+		this._googleApiPromise
+		.then(function () {
+			_this._map = map;
+			_this._insertAtTheBottom = insertAtTheBottom;
 
-		// create a container div for tiles
-		this._initContainer();
-		this._initMapObject();
+			// create a container div for tiles
+			_this._initContainer();
+			_this._initMapObject();
 
-		// set up events
-		map.on('viewreset', this._reset, this);
+			// set up events
+			map.on('viewreset', _this._reset, _this);
 
-		this._limitedUpdate = L.Util.limitExecByInterval(this._update, 150, this);
-		map.on('move', this._update, this);
+			_this._limitedUpdate = L.Util.limitExecByInterval(_this._update, 150, _this);
+			map.on('move', _this._update, _this);
 
-		map.on('zoomanim', this._handleZoomAnim, this);
+			map.on('zoomanim', _this._handleZoomAnim, _this);
 
-		//20px instead of 1em to avoid a slight overlap with google's attribution
-		map._controlCorners.bottomright.style.marginBottom = '20px';
+			// 20px instead of 1em to avoid a slight overlap with google's attribution
+			map._controlCorners.bottomright.style.marginBottom = '20px';
 
-		this._reset();
-		this._update();
+			_this._reset();
+			_this._update();
+		});
 	},
 
 	onRemove: function (map) {
@@ -91,7 +105,7 @@ L.Google = L.Class.extend({
 			first = tilePane.firstChild;
 
 		if (!this._container) {
-			this._container = L.DomUtil.create('div', 'leaflet-google-layer leaflet-top leaflet-left');
+			this._container = L.DomUtil.create('div', 'leaflet-google-layer');
 			this._container.id = '_GMapContainer_' + L.Util.stamp(this);
 			this._container.style.zIndex = 'auto';
 		}
@@ -103,7 +117,7 @@ L.Google = L.Class.extend({
 	},
 
 	_initMapObject: function () {
-		if (!this._ready) return;
+		if (!this._ready || !this._container) return;
 		this._google_center = new google.maps.LatLng(0, 0);
 		var map = new google.maps.Map(this._container, {
 			center: this._google_center,
@@ -129,7 +143,7 @@ L.Google = L.Class.extend({
 			function () { _this._checkZoomLevels(); });
 		google.maps.event.addListenerOnce(map, 'tilesloaded',
 			function () { _this.fire('load'); });
-		//Reporting that map-object was initialized.
+		// Reporting that map-object was initialized.
 		this.fire('MapObjectInitialized', {mapObject: map});
 	},
 
@@ -137,7 +151,7 @@ L.Google = L.Class.extend({
 		//setting the zoom level on the Google map may result in a different zoom level than the one requested
 		//(it won't go beyond the level for which they have data).
 		// verify and make sure the zoom levels on both Leaflet and Google maps are consistent
-		if ((this._map.getZoom() !== undefined) && (this._google.getZoom() !== this._map.getZoom())) {
+		if ((this._map.getZoom() !== undefined) && (this._google.getZoom() !== Math.round(this._map.getZoom()))) {
 			//zoom levels are out of sync. Set the leaflet zoom level to match the google one
 			this._map.setZoom(this._google.getZoom());
 		}
@@ -186,16 +200,32 @@ L.Google = L.Class.extend({
 	}
 });
 
-L.Google.asyncWait = [];
-L.Google.asyncInitialize = function () {
-	var i;
-	for (i = 0; i < L.Google.asyncWait.length; i++) {
-		var o = L.Google.asyncWait[i];
-		o._ready = true;
-		if (o._container) {
-			o._initMapObject();
-			o._update();
-		}
-	}
-	L.Google.asyncWait = [];
+L.Google.isGoogleMapsReady = function () {
+	return !!window.google && !!window.google.maps && !!window.google.maps.Map;
+};
+
+// backwards compat
+L.Google.asyncInitialize = L.Google.isGoogleMapsReady;
+
+L.Google.maxApiChecks = 10;
+
+L.Google.apiCheckIntervalMilliSecs = 500;
+
+L.Google.createGoogleApiPromise = function () {
+	var checkCounter = 0;
+	var intervalId = null;
+
+	return new Promise(function (resolve, reject) {
+		intervalId = setInterval(function () {
+			if (checkCounter >= L.Google.maxApiChecks && !L.Google.isGoogleMapsReady()) {
+				clearInterval(intervalId);
+				return reject(new Error('window.google not found after max attempts'));
+			}
+			if (L.Google.isGoogleMapsReady()) {
+				clearInterval(intervalId);
+				return resolve(window.google);
+			}
+			checkCounter++;
+		}, L.Google.apiCheckIntervalMilliSecs);
+	});
 };
