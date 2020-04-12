@@ -24,17 +24,14 @@ jQuery.getScript(FixScript.dataset.layersUrl).done(function(){
 	function addLayers(map) {
 		map.layers.runbikehike = map.createLayer("run-bike-hike");
 		AdditionalMapLayers.forEach(l => map.layers[l.type] = tileLayer(l));
-		if (window.google) {
-			window.google.load("maps", "3.9", {"other_params":"sensor=false&libraries=geometry,places&client=gme-stravainc1", callback: function(){
-				//'https://cdn.rawgit.com/shramov/leaflet-plugins/master/layer/tile/Google.js'
-				jQuery.getScript(FixScript.dataset.googleJsUrl).done(function() {
-					map.layers.googlesatellite = new L.Google('SATELLITE');
-					map.layers.googleroadmap = new L.Google('ROADMAP');
-					map.layers.googlehybrid = new L.Google('HYBRID');
-					map.layers.googleterrain = new L.Google('TERRAIN');
-				});
-			}});
-		}
+		jQuery.getScript("https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1").done(function () {
+			jQuery.getScript(FixScript.dataset.googleJsUrl).done(function () {
+				map.layers.googlesatellite = new L.Google('SATELLITE');
+				map.layers.googleroadmap = new L.Google('ROADMAP');
+				map.layers.googlehybrid = new L.Google('HYBRID');
+				map.layers.googleterrain = new L.Google('TERRAIN');
+			});
+		});
 	}
 
 	Strava.Maps.Mapbox.Base.mapIds.runbikehike_id = "mapbox.run-bike-hike";
