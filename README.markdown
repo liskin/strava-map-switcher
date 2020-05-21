@@ -6,7 +6,15 @@ Adds additional maps to Strava.com:
  - [Thunderforest Maps](http://www.thunderforest.com/maps/): OpenCycleMap, Transport, Outdoors
  - [mtbmap.cz](http://mtbmap.cz/)
  - [mapy.cz](https://mapy.cz/)
+ - [freemap.sk](https://www.freemap.sk/)
  - [Google Maps](https://maps.google.com/)
+ - …
+
+## Donations (♥ = €)
+
+If you like this extension and wish to support its development and maintenance
+(Strava website changes and this extension must adapt to continue functioning),
+please consider [a small donation](https://www.paypal.me/lisknisi/10EUR).
 
 ## Installation
 

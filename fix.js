@@ -11,6 +11,8 @@
  */
 
 document.arrive(".leaflet-container", {onceOnly: false, existing: true}, function () {
+	const donation = jQuery('<a href="https://www.paypal.me/lisknisi/10EUR">♥=€ strava-map-switcher</a>');
+
 	function tileLayer(l) {
 		var r = L.tileLayer(l.url, l.opts);
 		if (l.overlay) {
@@ -76,6 +78,8 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true}, functio
 			return map.setLayer(t);
 		};
 
+		activityOpts.append(jQuery('<li>').append(donation));
+
 		var optsToAdd = [];
 		optsToAdd.push(
 			{type: "runbikehike", name: "Run/Bike/Hike"});
@@ -137,6 +141,8 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true}, functio
 			addButton("Google Road Map", "googleroadmap");
 			addButton("Google Hybrid", "googlehybrid");
 			addButton("Google Terrain", "googleterrain");
+
+			clr.append(jQuery("<div class='button btn-xs'>").append(donation));
 
 			var preferredMap = localStorage.stravaMapSwitcherPreferred;
 			if (preferredMap) {
