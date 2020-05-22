@@ -34,7 +34,9 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true}, function () 
 		return s;
 	}
 
-	function layerFromLeaflet(map, type, l, before) {
+	function layerFromLeaflet(map, type, before) {
+		const l = AdditionalMapLayers[type];
+
 		if (l.overlay) {
 			const s = `${type}_overlay`;
 			if (!map.getSource(s))
@@ -48,15 +50,19 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true}, function () 
 	}
 
 	// heatmap
-	if (window.jQuery && window.map && window.idleEvent) {
+	if (window.map && window.idleEvent) {
 		let mapType = null;
 
 		const origIdleEvent = idleEvent;
 		idleEvent = function () {
 			origIdleEvent();
 
-			if (!map.getLayer("map-switcher") && mapType)
-				layerFromLeaflet(map, mapType, AdditionalMapLayers[mapType], "heat");
+			try {
+				if (!map.getLayer("map-switcher") && mapType)
+					layerFromLeaflet(map, mapType, "heat");
+			} catch (e) {
+				console.log(`idleEvent: ${e}`);
+			}
 		};
 
 		function setMapType(t) {
