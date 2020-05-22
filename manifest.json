@@ -24,6 +24,7 @@
     "Google.js",
     "arrive.min.js",
     "fix.js",
+    "fix-mapbox.js",
     "layers.js",
     "load.js"
   ],

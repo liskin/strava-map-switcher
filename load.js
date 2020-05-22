@@ -27,5 +27,6 @@
 			() => jQuery.getScript(getURL('Google.js')).promise()),
 	).then(function () {
 		jQuery.getScript(getURL('fix.js'));
+		jQuery.getScript(getURL('fix-mapbox.js'));
 	});
 }
