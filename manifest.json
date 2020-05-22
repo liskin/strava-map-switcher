@@ -23,8 +23,9 @@
   "web_accessible_resources": [
     "Google.js",
     "arrive.min.js",
-    "fix.js",
+    "donation.js",
     "fix-mapbox.js",
+    "fix.js",
     "layers.js",
     "load.js"
   ],

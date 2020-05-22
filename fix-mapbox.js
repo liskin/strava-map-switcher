@@ -11,8 +11,6 @@
  */
 
 document.arrive(".mapboxgl-map", {onceOnly: false, existing: true}, function () {
-	const donation = jQuery('<a href="https://www.paypal.me/lisknisi/10EUR">♥=€ strava-map-switcher</a>');
-
 	function tilesFromLeaflet(l) {
 		if (l.url.includes("{s}")) {
 			const subdomains = l.subdomains ? l.subdomains : "abc";
@@ -97,7 +95,8 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true}, function () 
 			([type, l]) => select.append(jQuery(`<option value="${type}" ${type == preferredMap ? "selected" : ""}>`).text(l.name)));
 		sidebar.append(jQuery('<div>').append(select));
 
-		sidebar.append(jQuery('<div>').append(donation));
+		if (MapSwitcherDonation)
+			sidebar.append(jQuery('<div>').append(MapSwitcherDonation));
 
 		if (preferredMap)
 			setTimeout(() => setMapType(preferredMap));
@@ -166,8 +165,10 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true}, function () 
 			([type, l]) => select.append(jQuery(`<option value="${type}" ${type == preferredMap ? "selected" : ""}>`).text(l.name)));
 		nav.append(select);
 
-		nav.append(jQuery('<span>&emsp;</span>'));
-		nav.append(donation);
+		if (MapSwitcherDonation) {
+			nav.append(jQuery('<span>&emsp;</span>'));
+			nav.append(MapSwitcherDonation);
+		}
 
 		jQuery('body').append(nav);
 

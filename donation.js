@@ -10,32 +10,14 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+var MapSwitcherDonation = null;
+
 {
-	const baseUrl = document.currentScript.src.match("^[a-z-]+://.*/") + "";
-	const getURL = (path) => baseUrl + path;
-
-	const ignoreError = (promise) => new Promise(resolve => { promise.finally(resolve); null; });
-
-	const getScript = (url) => new Promise(function (resolve, reject) {
-		const s = document.createElement("script");
-		s.src = url;
-		s.async = true;
-		s.type = 'text/javascript';
-		s.onerror = reject;
-		s.onload = resolve;
-		document.body.appendChild(s);
-	});
-
-	Promise.resolve(window.jQuery ? null
-		: getScript("https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js").then(() => jQuery.noConflict())
-	).then(() => Promise.all([
-		getScript(getURL('arrive.min.js')),
-		getScript(getURL('layers.js')),
-		getScript(getURL('donation.js')),
-		ignoreError(getScript("https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1")).then(
-			() => getScript(getURL('Google.js'))),
-	])).then(function () {
-		getScript(getURL('fix.js'));
-		getScript(getURL('fix-mapbox.js'));
-	});
+	const lastDonationClick = localStorage.stravaMapSwitcherLastDonationClick;
+	if (!lastDonationClick || (Date.now() - lastDonationClick) > 1000 * 86400 * 180) {
+		MapSwitcherDonation = jQuery('<a href="https://www.paypal.me/lisknisi/10EUR" target="_blank">♥=€ strava-map-switcher</a>');
+		MapSwitcherDonation.click(function () {
+			localStorage.stravaMapSwitcherLastDonationClick = Date.now();
+		});
+	}
 }
