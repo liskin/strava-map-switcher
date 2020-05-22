@@ -17,4 +17,9 @@
 // @downloadURL https://cdn.jsdelivr.net/gh/liskin/strava-map-switcher@master/greasemonkey.user.js
 // ==/UserScript==
 
-jQuery('body').append(jQuery("<script src='https://rawgit.com/liskin/strava-map-switcher/master/load.js'></script>"));
+{
+	const s = document.createElement("script");
+	s.src = 'https://rawgit.com/liskin/strava-map-switcher/master/load.js';
+	s.type = 'text/javascript';
+	document.body.appendChild(s);
+}

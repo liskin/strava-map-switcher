@@ -28,4 +28,4 @@ please consider [a small donation](https://www.paypal.me/lisknisi/10EUR).
 
 If you can't or don't want to use the addon/userscript, it works as a bookmarklet too:
 
-    javascript:jQuery('body').append(jQuery("<script src='https://cdn.jsdelivr.net/gh/liskin/strava-map-switcher@master/load.js'></script>"));void(0);
+    javascript:{const s = document.createElement("script"); s.src = 'https://rawgit.com/liskin/strava-map-switcher/master/load.js'; s.type = 'text/javascript'; document.body.appendChild(s);};void(0);
