@@ -26,12 +26,14 @@
 		document.body.appendChild(s);
 	});
 
-	Promise.all([
+	Promise.resolve(window.jQuery ? null
+		: getScript("https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js").then(() => jQuery.noConflict())
+	).then(() => Promise.all([
 		getScript(getURL('arrive.min.js')),
 		getScript(getURL('layers.js')),
 		ignoreError(getScript("https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1")).then(
 			() => getScript(getURL('Google.js'))),
-	]).then(function () {
+	])).then(function () {
 		getScript(getURL('fix.js'));
 		getScript(getURL('fix-mapbox.js'));
 	});

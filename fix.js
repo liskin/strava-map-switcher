@@ -158,38 +158,4 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true}, functio
 		};
 		explorerMapFilters.trigger('submit');
 	}
-
-	var routeBuilderOpts = jQuery('#view-options li.map-style div.switches');
-	if (routeBuilderOpts.length) {
-		var once = true;
-		Strava.Routes.MapViewOptionsView.prototype.setMapStyle = function(t){
-			var map = this.map;
-
-			if (once) {
-				once = false;
-
-				addLayers(map);
-			}
-
-			localStorage.stravaMapSwitcherPreferred = t;
-			return map.setLayer(t);
-		};
-
-		var preferredMap = localStorage.stravaMapSwitcherPreferred;
-
-		// change map so that our setMapStyle is called
-		routeBuilderOpts.find('div:last').click();
-
-		routeBuilderOpts.css({display: 'block', position: 'relative'});
-		Object.entries(AdditionalMapLayers).forEach(([type, l]) =>
-			routeBuilderOpts.append(
-				jQuery("<div class='button btn-xs' tabindex='0'>").data("value", type).text(l.name)
-			)
-		);
-		routeBuilderOpts.children().css({display: 'block', width: '100%'});
-
-		if (preferredMap) {
-			routeBuilderOpts.children().filter((_, e) => jQuery(e).data("value") === preferredMap).click();
-		}
-	}
 });

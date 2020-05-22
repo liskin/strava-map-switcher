@@ -41,12 +41,20 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true}, function () 
 			const s = `${type}_overlay`;
 			if (!map.getSource(s))
 				map.addSource(s, sourceFromLeaflet(l.overlay));
+			if (map.getLayer("map-switcher-overlay"))
+				map.removeLayer("map-switcher-overlay");
 			map.addLayer({id: "map-switcher-overlay", type: "raster", source: s}, before);
 		}
 
 		if (!map.getSource(type))
 			map.addSource(type, sourceFromLeaflet(l));
+		if (map.getLayer("map-switcher"))
+			map.removeLayer("map-switcher");
 		map.addLayer({id: "map-switcher", type: "raster", source: type}, l.overlay ? "map-switcher-overlay" : before);
+	}
+
+	function clearCompositeLayers(map) {
+		map.getStyle().layers.filter(l => l.source == "composite").map(l => l.id).forEach(l => map.removeLayer(l));
 	}
 
 	// heatmap
@@ -58,8 +66,10 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true}, function () 
 			origIdleEvent();
 
 			try {
-				if (!map.getLayer("map-switcher") && mapType)
+				if (!map.getLayer("map-switcher") && mapType) {
+					clearCompositeLayers(map);
 					layerFromLeaflet(map, mapType, "heat");
+				}
 			} catch (e) {
 				console.log(`idleEvent: ${e}`);
 			}
@@ -89,8 +99,84 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true}, function () 
 
 		sidebar.append(jQuery('<div>').append(donation));
 
-		if (preferredMap) {
+		if (preferredMap)
 			setTimeout(() => setMapType(preferredMap));
+	}
+
+	function reactInternalInstance(e) {
+		const found = Object.entries(e).find(([k, _]) => k.startsWith('__reactInternalInstance$'));
+		return found ? found[1] : null;
+	}
+
+	function sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	async function wait(what) {
+		for (let tries = 0, delay = 100; tries < 60; ++tries, delay = Math.min(delay * 2, 1000)) {
+			const got = what();
+			if (got)
+				return got;
+
+			await sleep(delay);
 		}
+
+		throw new Error(`timeout ${what}`);
+	}
+
+	async function patchRouteBuilder(mapbox) {
+		const map = await wait(function () {
+			let map = null;
+			mapbox.return.memoizedProps.mapboxRef((m) => (map = m, m));
+			return map;
+		});
+		await wait(() => map.getLayer("global-heatmap"));
+
+		function setMapType(t) {
+			if (t && !AdditionalMapLayers[t])
+				return;
+
+			localStorage.stravaMapSwitcherPreferred = t;
+
+			if (t) {
+				clearCompositeLayers(map);
+				layerFromLeaflet(map, t, map.getLayer("global-heatmap") ? "global-heatmap" : "z-index-1");
+			}
+		}
+
+		const preferredMap = localStorage.stravaMapSwitcherPreferred;
+
+		const nav = jQuery('<div>').css({
+			"position": "absolute",
+			"top": 0,
+			"left": 0,
+			"right": 0,
+			"margin-left": "auto",
+			"margin-right": "auto",
+			"width": "30em",
+			"padding": "1ex",
+			"background-color": "#ddd",
+			"border": "1px solid #888",
+		});
+
+		const select = jQuery('<select>');
+		select.change(e => setMapType(e.target.value));
+		select.append(jQuery(`<option value="">`).text("---"));
+		Object.entries(AdditionalMapLayers).forEach(
+			([type, l]) => select.append(jQuery(`<option value="${type}" ${type == preferredMap ? "selected" : ""}>`).text(l.name)));
+		nav.append(select);
+
+		nav.append(jQuery('<span>&emsp;</span>'));
+		nav.append(donation);
+
+		jQuery('body').append(nav);
+
+		if (preferredMap)
+			setTimeout(() => setMapType(preferredMap));
+	}
+
+	const mapbox = reactInternalInstance(this);
+	if (mapbox && jQuery('#ftue-routing-settings')) {
+		patchRouteBuilder(mapbox);
 	}
 });
