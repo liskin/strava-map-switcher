@@ -69,13 +69,13 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true}, function () 
 			if (t && !AdditionalMapLayers[t])
 				return;
 
-			localStorage.stravaMapSwitcherHeatmapPreferred = t;
+			localStorage.stravaMapSwitcherPreferred = t;
 			mapType = t;
 			state.prevStyle = null;
 			updateMapStyles();
 		}
 
-		const preferredMap = localStorage.stravaMapSwitcherHeatmapPreferred;
+		const preferredMap = localStorage.stravaMapSwitcherPreferred;
 
 		const sidebar = jQuery('#js-sidebar-content div.section:first');
 		sidebar.append(jQuery('<h5>Maps</h5>'));

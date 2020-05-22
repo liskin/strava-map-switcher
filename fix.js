@@ -118,7 +118,7 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true}, functio
 			addLayers(e.map);
 
 			function setMapType(t) {
-				localStorage.stravaMapSwitcherSegmentExplorerPreferred = t;
+				localStorage.stravaMapSwitcherPreferred = t;
 				e.map.setLayer(t);
 			}
 
