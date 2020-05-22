@@ -65,7 +65,6 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true}, function () 
 
 			try {
 				if (!map.getLayer("map-switcher") && mapType) {
-					clearCompositeLayers(map);
 					layerFromLeaflet(map, mapType, "heat");
 				}
 			} catch (e) {
