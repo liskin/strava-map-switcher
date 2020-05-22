@@ -14,19 +14,31 @@
 	const baseUrl = document.currentScript.src.match("^[a-z-]+://.*/") + "";
 	const getURL = (path) => baseUrl + path;
 
-	const ignoreError = function (deferred) {
-		const newDeferred = jQuery.Deferred();
-		deferred.always(newDeferred.resolve);
-		return newDeferred.promise();
+	const ignoreError = function (promise) {
+		return new Promise(function (resolve, reject) {
+			promise.finally(resolve);
+		});
 	};
 
-	jQuery.when(
-		jQuery.getScript(getURL('arrive.min.js')),
-		jQuery.getScript(getURL('layers.js')),
-		ignoreError(jQuery.getScript("https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1")).then(
-			() => jQuery.getScript(getURL('Google.js')).promise()),
-	).then(function () {
-		jQuery.getScript(getURL('fix.js'));
-		jQuery.getScript(getURL('fix-mapbox.js'));
+	const getScript = function (url) {
+		return new Promise(function (resolve, reject) {
+			const s = document.createElement("script");
+			s.src = url;
+			s.async = true;
+			s.type = 'text/javascript';
+			s.onerror = reject;
+			s.onload = resolve;
+			document.body.appendChild(s);
+		});
+	};
+
+	Promise.all([
+		getScript(getURL('arrive.min.js')),
+		getScript(getURL('layers.js')),
+		ignoreError(getScript("https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1")).then(
+			() => getScript(getURL('Google.js'))),
+	]).then(function () {
+		getScript(getURL('fix.js'));
+		getScript(getURL('fix-mapbox.js'));
 	});
 }
