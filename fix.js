@@ -24,7 +24,7 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true}, functio
 
 	function addLayers(map) {
 		map.layers.runbikehike = map.createLayer("run-bike-hike");
-		AdditionalMapLayers.forEach(l => map.layers[l.type] = tileLayer(l));
+		Object.entries(AdditionalMapLayers).forEach(([type, l]) => map.layers[type] = tileLayer(l));
 		map.layers.googlesatellite = new L.Google('SATELLITE');
 		map.layers.googleroadmap = new L.Google('ROADMAP');
 		map.layers.googlehybrid = new L.Google('HYBRID');
@@ -43,7 +43,7 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true}, functio
 		,googlehybrid: "Google Hybrid"
 		,googleterrain: "Google Terrain"
 		};
-	AdditionalMapLayers.forEach(l => layerNames[l.type] = l.name);
+	Object.entries(AdditionalMapLayers).forEach(([type, l]) => layerNames[type] = l.name);
 
 	var activityOpts = jQuery('#map-type-control .options');
 	if (activityOpts.length) {
@@ -83,7 +83,7 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true}, functio
 		var optsToAdd = [];
 		optsToAdd.push(
 			{type: "runbikehike", name: "Run/Bike/Hike"});
-		AdditionalMapLayers.forEach(l => optsToAdd.push({type: l.type, name: l.name}));
+		Object.entries(AdditionalMapLayers).forEach(([type, l]) => optsToAdd.push({type: type, name: l.name}));
 		optsToAdd.push(
 			{type: "googlesatellite", name: "Google Satellite"},
 			{type: "googleroadmap", name: "Google Road Map"},
@@ -136,7 +136,7 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true}, functio
 			addButton("Terrain", "terrain");
 			addButton("Satellite", "satellite");
 			addButton("Run/Bike/Hike", "runbikehike");
-			AdditionalMapLayers.forEach(l => addButton(l.name, l.type));
+			Object.entries(AdditionalMapLayers).forEach(([type, l]) => addButton(l.name, type));
 			addButton("Google Satellite", "googlesatellite");
 			addButton("Google Road Map", "googleroadmap");
 			addButton("Google Hybrid", "googlehybrid");
@@ -181,9 +181,9 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true}, functio
 		routeBuilderOpts.find('div:last').click();
 
 		routeBuilderOpts.css({display: 'block', position: 'relative'});
-		AdditionalMapLayers.forEach(l =>
+		Object.entries(AdditionalMapLayers).forEach(([type, l]) =>
 			routeBuilderOpts.append(
-				jQuery("<div class='button btn-xs' tabindex='0'>").data("value", l.type).text(l.name)
+				jQuery("<div class='button btn-xs' tabindex='0'>").data("value", type).text(l.name)
 			)
 		);
 		routeBuilderOpts.children().css({display: 'block', width: '100%'});
