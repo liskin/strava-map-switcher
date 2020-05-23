@@ -11,6 +11,8 @@
  */
 
 {
+	localStorage.stravaMapSwitcherVersion = chrome.runtime.getManifest().version;
+
 	const s = document.createElement("script");
 	s.src = chrome.runtime.getURL("load.js");
 	s.type = 'text/javascript';
