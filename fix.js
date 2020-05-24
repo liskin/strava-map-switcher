@@ -77,6 +77,7 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true}, functio
 				.text(layerNames[t]));
 		}
 
+		activityOpts.css({"max-height": "250px", "right": 0});
 		activityOpts.prepend(button("standard"));
 		activityOpts.append(button("runbikehike"));
 
