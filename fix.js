@@ -45,18 +45,12 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true}, functio
 
 	var activityOpts = jQuery('#map-type-control .options');
 	if (activityOpts.length) {
-		Strava.Maps.CustomControlView.prototype.handleMapTypeSelector = function(t) {
-			var e, i, r;
-			return(
-				e = this.$$(t.target),
-				r = e.data("map-type-id"),
-				i = this.$("#selected-map").data("map-type-id"),
-				e.data("map-type-id", i),
-				e.text(layerNames[i]),
-				this.$("#selected-map").data("map-type-id", r),
-				this.$("#selected-map").text(layerNames[r]),
-				this.changeMapType(r)
-			);
+		Strava.Maps.CustomControlView.prototype.handleMapTypeSelector = function (t) {
+			const type = this.$$(t.target).data("map-type-id");
+			const selected = this.$("#selected-map");
+			selected.data("map-type-id", type);
+			selected.text(layerNames[type]);
+			return this.changeMapType(type);
 		};
 
 		var once = true;
@@ -76,19 +70,21 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true}, functio
 			return map.setLayer(t);
 		};
 
+		function button(t) {
+			return jQuery('<li>')
+				.append(jQuery('<a class="map-type-selector">')
+				.data("map-type-id", t)
+				.text(layerNames[t]));
+		}
+
+		activityOpts.prepend(button("standard"));
+		activityOpts.append(button("runbikehike"));
+
 		if (MapSwitcherDonation)
 			activityOpts.append(jQuery('<li>').append(MapSwitcherDonation));
 
-		var optsToAdd = [];
-		optsToAdd.push(
-			{type: "runbikehike", name: "Run/Bike/Hike"});
-		Object.entries(AdditionalMapLayers).forEach(([type, l]) => optsToAdd.push({type: type, name: l.name}));
-		optsToAdd.push(
-			{type: "googlesatellite", name: "Google Satellite"},
-			{type: "googleroadmap", name: "Google Road Map"},
-			{type: "googlehybrid", name: "Google Hybrid"},
-			{type: "googleterrain", name: "Google Terrain"});
-		optsToAdd.forEach(o => activityOpts.append(jQuery('<li>').append(jQuery('<a class="map-type-selector">').data("map-type-id", o.type).text(o.name))));
+		Object.keys(AdditionalMapLayers).forEach(t => activityOpts.append(button(t)));
+		["googlesatellite", "googleroadmap", "googlehybrid", "googleterrain"].forEach(t => activityOpts.append(button(t)));
 
 		var preferredMap = localStorage.stravaMapSwitcherPreferred;
 
