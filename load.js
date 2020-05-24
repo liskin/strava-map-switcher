@@ -14,7 +14,7 @@
 	const baseUrl = document.currentScript.src.match("^[a-z-]+://.*/") + "";
 	const getURL = (path) => baseUrl + path;
 
-	const ignoreError = (promise) => new Promise(resolve => { promise.finally(resolve); null; });
+	const ignoreError = (promise) => new Promise(resolve => { promise.then(resolve, resolve); null; });
 
 	const getScript = (url) => new Promise(function (resolve, reject) {
 		const s = document.createElement("script");
