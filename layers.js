@@ -21,6 +21,7 @@ var AdditionalMapLayers;
 	const cuzkAttr = '&copy; <a href="http://geoportal.cuzk.cz" target="_blank">ČÚZK</a>';
 	const kartverketAttr = '&copy; <a href="http://www.kartverket.no/">Kartverket</a>';
 	const geoportailAttr = '&copy; <a href="https://www.geoportail.gouv.fr/">Geoportail</a>';
+	const mtbMapNOAttr = osmAttr + ', Tiles courtesy of <a href="https://mtbmap.no/" target="_blank">mtbmap.no</a>';
 
 	AdditionalMapLayers = {
 		openstreetmap: {name: "OpenStreetMap",
@@ -62,5 +63,8 @@ var AdditionalMapLayers;
 		geoportail: {name: "Geoportail Aerial [FR]",
 			url: "https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=ORTHOIMAGERY.ORTHOPHOTOS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix={z}&TileCol={x}&TileRow={y}",
 			opts: {maxZoom: 20, maxNativeZoom: 19, attribution: geoportailAttr}},
+		mtbmap: {name: "mtbmap.no [NO]",
+			url: "https://mtbmap.no/tiles/osm/mtbmap/{z}/{x}/{y}.jpg",
+			opts: {minZoom: 3, maxZoom: 18, maxNativeZoom: 16, attribution: mtbMapNOAttr}},
 	};
 }
