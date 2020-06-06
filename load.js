@@ -26,14 +26,21 @@
 		document.body.appendChild(s);
 	});
 
-	Promise.resolve(window.jQuery ? null
-		: getScript("https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js").then(() => jQuery.noConflict())
-	).then(() => Promise.all([
+	const loadJQuery = () => window.jQuery
+		? Promise.resolve(null)
+		: getScript("https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js").then(() => jQuery.noConflict());
+	const loadGoogleMaps = () => document.querySelector('script[src*="//maps.google.com/maps/api/js"]')
+		? Promise.resolve(null)
+		: ignoreError(getScript("https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1"));
+	const loadGoogleLeaflet = () => (window.L && window.L.Class)
+		? getScript(getURL('Google.js'))
+		: Promise.resolve(null);
+
+	loadJQuery().then(() => Promise.all([
 		getScript(getURL('arrive.min.js')),
 		getScript(getURL('layers.js')),
 		getScript(getURL('donation.js')),
-		ignoreError(getScript("https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1")).then(
-			() => getScript(getURL('Google.js'))),
+		loadGoogleMaps().then(() => loadGoogleLeaflet()),
 	])).then(function () {
 		getScript(getURL('fix.js'));
 		getScript(getURL('fix-mapbox.js'));
