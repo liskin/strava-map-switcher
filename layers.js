@@ -21,6 +21,7 @@ var AdditionalMapLayers;
 	const cuzkAttr = '&copy; <a href="http://geoportal.cuzk.cz" target="_blank">ČÚZK</a>';
 	const kartverketAttr = '&copy; <a href="http://www.kartverket.no/">Kartverket</a>';
 	const geoportailAttr = '&copy; <a href="https://www.geoportail.gouv.fr/">Geoportail</a>';
+	const mtbMapNOAttr = osmAttr + ', Tiles courtesy of <a href="https://mtbmap.no/" target="_blank">mtbmap.no</a>';
 
 	AdditionalMapLayers = {
 		openstreetmap: {name: "OpenStreetMap",
@@ -56,6 +57,9 @@ var AdditionalMapLayers;
 		zmcr: {name: "Základní mapy ČR [CZ]",
 			url: "https://ags.cuzk.cz/arcgis/rest/services/zmwm/MapServer/tile/{z}/{y}/{x}",
 			opts: {minZoom: 7, maxZoom: 20, maxNativeZoom: 18, attribution: cuzkAttr}},
+		mtbmapno: {name: "mtbmap.no [NO]",
+			url: "https://mtbmap.no/tiles/osm/mtbmap/{z}/{x}/{y}.jpg",
+			opts: {minZoom: 1, maxZoom: 20, maxNativeZoom: 16, attribution: mtbMapNOAttr}},
 		kartverket: {name: "Kartverket [NO]",
 			url: "https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}",
 			opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 18, attribution: kartverketAttr}},
