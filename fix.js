@@ -24,7 +24,6 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 	}
 
 	function addLayers(map) {
-		map.layers.runbikehike = map.createLayer("run-bike-hike");
 		Object.entries(AdditionalMapLayers).forEach(([type, l]) => map.layers[type] = tileLayer(l));
 		map.layers.googlesatellite = new L.Google('SATELLITE');
 		map.layers.googleroadmap = new L.Google('ROADMAP');
@@ -32,13 +31,9 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 		map.layers.googleterrain = new L.Google('TERRAIN');
 	}
 
-	Strava.Maps.Mapbox.Base.mapIds.runbikehike_id = "mapbox.run-bike-hike";
-
 	var layerNames =
-		{terrain: Strava.I18n.Locale.t("strava.maps.google.custom_control.terrain")
-		,standard: Strava.I18n.Locale.t("strava.maps.google.custom_control.standard")
+		{standard: Strava.I18n.Locale.t("strava.maps.google.custom_control.standard")
 		,satellite: Strava.I18n.Locale.t("strava.maps.google.custom_control.satellite")
-		,runbikehike: "Run/Bike/Hike"
 		,googlesatellite: "Google Satellite"
 		,googleroadmap: "Google Road Map"
 		,googlehybrid: "Google Hybrid"
@@ -82,7 +77,6 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 
 		activityOpts.css({"max-height": "250px", "right": 0});
 		activityOpts.prepend(button("standard"));
-		activityOpts.append(button("runbikehike"));
 
 		if (MapSwitcherDonation)
 			activityOpts.append(jQuery('<li>').append(MapSwitcherDonation));
@@ -132,9 +126,7 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 				clr.append(b);
 			}
 			addButton("Standard", "standard");
-			addButton("Terrain", "terrain");
 			addButton("Satellite", "satellite");
-			addButton("Run/Bike/Hike", "runbikehike");
 			Object.entries(AdditionalMapLayers).forEach(([type, l]) => addButton(l.name, type));
 			addButton("Google Satellite", "googlesatellite");
 			addButton("Google Road Map", "googleroadmap");
