@@ -41,7 +41,7 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 		};
 	Object.entries(AdditionalMapLayers).forEach(([type, l]) => layerNames[type] = l.name);
 
-	var activityOpts = jQuery('#map-type-control .options');
+	var activityOpts = jQuery('#map-type-control .options', this);
 	if (activityOpts.length) {
 		Strava.Maps.CustomControlView.prototype.handleMapTypeSelector = function (t) {
 			const type = this.$$(t.target).data("map-type-id");
