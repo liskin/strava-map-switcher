@@ -21,7 +21,7 @@
     }
   ],
   "web_accessible_resources": [
-    "Google.js",
+    "Leaflet.GoogleMutant.js",
     "arrive.min.js",
     "donation.js",
     "fix-mapbox.js",

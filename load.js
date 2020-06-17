@@ -32,15 +32,15 @@
 	const loadGoogleMaps = () => document.querySelector('script[src*="//maps.google.com/maps/api/js"]')
 		? Promise.resolve(null)
 		: ignoreError(getScript("https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1"));
-	const loadGoogleLeaflet = () => (window.L && window.L.Class)
-		? getScript(getURL('Google.js'))
+	const loadGoogleMutant = () => (window.L && window.L.Class)
+		? getScript(getURL("Leaflet.GoogleMutant.js"))
 		: Promise.resolve(null);
 
 	loadJQuery().then(() => Promise.all([
 		getScript(getURL('arrive.min.js')),
 		getScript(getURL('layers.js')),
 		getScript(getURL('donation.js')),
-		loadGoogleMaps().then(() => loadGoogleLeaflet()),
+		loadGoogleMaps().then(() => loadGoogleMutant()),
 	])).then(function () {
 		getScript(getURL('fix.js'));
 		getScript(getURL('fix-mapbox.js'));

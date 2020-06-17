@@ -25,10 +25,10 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 
 	function addLayers(map) {
 		Object.entries(AdditionalMapLayers).forEach(([type, l]) => map.layers[type] = tileLayer(l));
-		map.layers.googlesatellite = new L.Google('SATELLITE');
-		map.layers.googleroadmap = new L.Google('ROADMAP');
-		map.layers.googlehybrid = new L.Google('HYBRID');
-		map.layers.googleterrain = new L.Google('TERRAIN');
+		map.layers.googlesatellite = L.gridLayer.googleMutant({type: 'satellite'});
+		map.layers.googleroadmap = L.gridLayer.googleMutant({type: 'roadmap'});
+		map.layers.googlehybrid = L.gridLayer.googleMutant({type: 'hybrid'});
+		map.layers.googleterrain = L.gridLayer.googleMutant({type: 'terrain'});
 	}
 
 	var layerNames =
