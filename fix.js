@@ -31,6 +31,11 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 		map.layers.googleterrain = L.gridLayer.googleMutant({type: 'terrain'});
 	}
 
+	function addPegman(map) {
+		const pegmanControl = new L.Control.Pegman({position: 'bottomright', theme: 'leaflet-pegman-v3-default'});
+		pegmanControl.addTo(map);
+	}
+
 	var layerNames =
 		{standard: Strava.I18n.Locale.t("strava.maps.google.custom_control.standard")
 		,satellite: Strava.I18n.Locale.t("strava.maps.google.custom_control.satellite")
@@ -59,6 +64,7 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 				once = false;
 
 				addLayers(map);
+				addPegman(map.instance);
 
 				// this is needed for the right handleMapTypeSelector to be called
 				this.delegateEvents();
@@ -109,6 +115,7 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 			once = true;
 
 			addLayers(e.map);
+			addPegman(e.map.instance);
 
 			function setMapType(t) {
 				localStorage.stravaMapSwitcherPreferred = t;

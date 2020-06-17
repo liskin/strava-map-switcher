@@ -26,6 +26,13 @@
 		document.body.appendChild(s);
 	});
 
+	const getCSS = function (url) {
+		const s = document.createElement('link');
+		s.href = url;
+		s.rel = 'stylesheet';
+		document.head.appendChild(s);
+	};
+
 	const loadJQuery = () => window.jQuery
 		? Promise.resolve(null)
 		: getScript("https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js").then(() => jQuery.noConflict());
@@ -41,7 +48,9 @@
 		getScript(getURL('layers.js')),
 		getScript(getURL('donation.js')),
 		loadGoogleMaps().then(() => loadGoogleMutant()),
+		getScript('https://cdn.jsdelivr.net/npm/leaflet-pegman@0.1.3/leaflet-pegman.min.js'),
 	])).then(function () {
+		getCSS('https://cdn.jsdelivr.net/npm/leaflet-pegman@0.1.3/leaflet-pegman.min.css'),
 		getScript(getURL('fix.js'));
 		getScript(getURL('fix-mapbox.js'));
 	});
