@@ -155,9 +155,6 @@ L.GridLayer.GoogleMutant = L.GridLayer.extend({
 			this._mutantContainer.id = '_MutantContainer_' + L.Util.stamp(this._mutantContainer);
 			this._mutantContainer.style.zIndex = '800'; //leaflet map pane at 400, controls at 1000
 			this._mutantContainer.style.pointerEvents = 'none';
-			
-			L.DomEvent.off(this._mutantContainer);
-
 		}
 		this._map.getContainer().appendChild(this._mutantContainer);
 
