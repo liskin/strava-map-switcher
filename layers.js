@@ -51,7 +51,7 @@ var AdditionalMapLayers;
 		mtbmap: {name: "mtbmap.cz [Europe]",
 			url: "http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png",
 			opts: {minZoom: 3, maxZoom: 20, maxNativeZoom: 18, attribution: mtbMapAttr}},
-		freemapsk: {name: "freemap.sk [CZ + SK + HU]",
+		freemapsk: {name: "freemap.sk [Europe south-east]",
 			url: "https://outdoor.tiles.freemap.sk/{z}/{x}/{y}",
 			opts: {minZoom: 3, maxZoom: 20, maxNativeZoom: 19, attribution: freeMapSkAttr}},
 		zmcr: {name: "Základní mapy ČR [CZ]",
