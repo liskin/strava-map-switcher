@@ -16,6 +16,13 @@ If you like this extension and wish to support its development and maintenance
 (Strava website changes and this extension must adapt to continue functioning),
 please consider [a small donation](https://www.paypal.me/lisknisi/10EUR).
 
+By donating, you'll also support the development of my other projects. You
+might like these:
+
+* <https://github.com/liskin/strava-offline> - Keep a local mirror of Strava activities for further analysis/processing
+* <https://github.com/liskin/locus-graphhopper-gpx> - Convert GraphHopper JSON to GPX with Locus nav. instructions
+* <https://github.com/liskin/leaflet-tripreport> - A simple tool for visualization of bikepacking trips, both planned and ridden
+
 ## Installation
 
  - [Chrome Web Store](https://chrome.google.com/webstore/detail/strava-map-switcher/djcheclpmmkcdkjcenfamalobdenmici)
