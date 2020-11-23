@@ -14,7 +14,8 @@ Adds additional maps to Strava.com:
 
 If you like this extension and wish to support its development and maintenance
 (Strava website changes and this extension must adapt to continue functioning),
-please consider [a small donation](https://www.paypal.me/lisknisi/10EUR).
+please consider [a small donation](https://www.paypal.me/lisknisi/10EUR) or
+[recurrent support through GitHub Sponsors](https://github.com/sponsors/liskin).
 
 By donating, you'll also support the development of my other projects. You
 might like these:
