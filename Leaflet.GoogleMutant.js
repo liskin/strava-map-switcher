@@ -6,6 +6,8 @@
  * this stuff is worth it, you can buy me a beer in return.
  */
 
+/* for further modifications in strava-map-switcher, see git history, e.g. at https://github.com/liskin/strava-map-switcher/ */
+
 // Based on https://github.com/shramov/leaflet-plugins
 // GridLayer like https://avinmathew.com/leaflet-and-google-maps/ , but using MutationObserver instead of jQuery
 
