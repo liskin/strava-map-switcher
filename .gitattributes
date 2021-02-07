@@ -1,0 +1,4 @@
+.git* export-ignore
+/Makefile export-ignore
+/README.* export-ignore
+/greasemonkey.user.js export-ignore

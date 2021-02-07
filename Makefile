@@ -1,6 +1,6 @@
 .PHONY: zip
 zip:
-	.scripts/zip.sh
+	git archive -o strava-map-switcher-$(shell git describe).zip @
 
 .PHONY: release
 release:
