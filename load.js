@@ -48,9 +48,9 @@
 		getScript(getURL('layers.js')),
 		getScript(getURL('donation.js')),
 		loadGoogleMaps().then(() => loadGoogleMutant()),
-		getScript('https://cdn.jsdelivr.net/npm/leaflet-pegman@0.1.6/leaflet-pegman.min.js'),
+		getScript(getURL('3rd/leaflet-pegman.min.js')),
 	])).then(function () {
-		getCSS('https://cdn.jsdelivr.net/npm/leaflet-pegman@0.1.6/leaflet-pegman.min.css'),
+		getCSS(getURL('3rd/leaflet-pegman.min.css')),
 		getScript(getURL('fix.js'));
 		getScript(getURL('fix-mapbox.js'));
 	});
