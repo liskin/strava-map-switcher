@@ -40,7 +40,7 @@
 		? Promise.resolve(null)
 		: ignoreError(getScript('https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1'));
 	const loadGoogleMutant = () => (window.L && window.L.Class)
-		? getScript(getURL('Leaflet.GoogleMutant.js'))
+		? getScript(getURL('3rd/Leaflet.GoogleMutant.js'))
 		: Promise.resolve(null);
 
 	loadJQuery().then(() => Promise.all([
