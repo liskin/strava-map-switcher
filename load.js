@@ -35,7 +35,7 @@
 
 	const loadJQuery = () => window.jQuery
 		? Promise.resolve(null)
-		: getScript('https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js').then(() => jQuery.noConflict());
+		: getScript(getURL('3rd/jquery.min.js')).then(() => jQuery.noConflict());
 	const loadGoogleMaps = () => document.querySelector('script[src*="//maps.google.com/maps/api/js"]')
 		? Promise.resolve(null)
 		: ignoreError(getScript('https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1'));
