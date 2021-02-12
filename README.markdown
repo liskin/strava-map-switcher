@@ -28,6 +28,7 @@ might like these:
 
  - [Chrome Web Store](https://chrome.google.com/webstore/detail/strava-map-switcher/djcheclpmmkcdkjcenfamalobdenmici)
  - [Firefox Addons](https://addons.mozilla.org/cs/firefox/addon/strava-map-switcher/)
+ - [Microsoft Edge Extensions](https://microsoftedge.microsoft.com/addons/detail/stravamapswitcher/dgepecolfdnodeepdmfdojcpmofplbjl)
  - [user script](https://cdn.jsdelivr.net/gh/liskin/strava-map-switcher@master/greasemonkey.user.js)
    ([ViolentMonkey](https://violentmonkey.github.io/get-it/),
    [GreaseMonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/))
