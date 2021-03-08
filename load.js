@@ -37,8 +37,8 @@
 		? Promise.resolve(null)
 		: getScript(getURL('3rd/jquery-3.5.1.min.js')).then(() => jQuery.noConflict());
 	const loadGoogleMaps = () => document.querySelector('script[src*="//maps.google.com/maps/api/js"]')
-	    ? Promise.resolve(null)
-	    : getScript('https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1');
+		? Promise.resolve(null)
+		: getScript('https://maps.google.com/maps/api/js?sensor=true&client=gme-stravainc1');
 	const loadGoogleMutant = () => (window.L && window.L.Class)
 		? getScript(getURL('3rd/Leaflet.GoogleMutant.js'))
 		: Promise.resolve(null);
