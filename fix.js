@@ -25,15 +25,19 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 
 	function addLayers(map) {
 		Object.entries(AdditionalMapLayers).forEach(([type, l]) => map.layers[type] = tileLayer(l));
-		map.layers.googlesatellite = L.gridLayer.googleMutant({type: 'satellite'});
-		map.layers.googleroadmap = L.gridLayer.googleMutant({type: 'roadmap'});
-		map.layers.googlehybrid = L.gridLayer.googleMutant({type: 'hybrid'});
-		map.layers.googleterrain = L.gridLayer.googleMutant({type: 'terrain'});
+		if (typeof L.gridLayer.googleMutant !== "undefined") {
+			map.layers.googlesatellite = L.gridLayer.googleMutant({type: 'satellite'});
+			map.layers.googleroadmap = L.gridLayer.googleMutant({type: 'roadmap'});
+			map.layers.googlehybrid = L.gridLayer.googleMutant({type: 'hybrid'});
+			map.layers.googleterrain = L.gridLayer.googleMutant({type: 'terrain'});
+		}
 	}
 
 	function addPegman(map) {
-		const pegmanControl = new L.Control.Pegman({position: 'bottomright', theme: 'leaflet-pegman-v3-default'});
-		pegmanControl.addTo(map);
+		if (typeof L.Control.Pegman !== "undefined") {
+			const pegmanControl = new L.Control.Pegman({position: 'bottomright', theme: 'leaflet-pegman-v3-default'});
+			pegmanControl.addTo(map);
+		}
 	}
 
 	var layerNames =
