@@ -13,13 +13,13 @@
 var AdditionalMapLayers;
 
 {
-	const osmAttr = '&copy; <a href="http://openstreetmap.org" target="_blank">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/" target="_blank">CC-BY-SA</a>';
-	const thunderforestAttr = osmAttr + ', Tiles courtesy of <a href="http://www.thunderforest.com/" target="_blank">Andy Allan</a>';
+	const osmAttr = '&copy; <a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank">CC-BY-SA</a>';
+	const thunderforestAttr = osmAttr + ', Tiles courtesy of <a href="https://www.thunderforest.com/" target="_blank">Andy Allan</a>';
 	const mtbMapAttr = osmAttr + ', Tiles courtesy of <a href="http://mtbmap.cz/" target="_blank">mtbmap.cz</a>';
-	const freeMapSkAttr = osmAttr + ', Tiles courtesy of <a href="http://freemap.sk/" target="_blank">freemap.sk</a>';
+	const freeMapSkAttr = osmAttr + ', Tiles courtesy of <a href="https://freemap.sk/" target="_blank">freemap.sk</a>';
 	const mapyCzAttr = '&copy; <a href="https://www.seznam.cz/" target="_blank">Seznam.cz, a.s</a>, ' + osmAttr;
-	const cuzkAttr = '&copy; <a href="http://geoportal.cuzk.cz" target="_blank">ČÚZK</a>';
-	const kartverketAttr = '&copy; <a href="http://www.kartverket.no/">Kartverket</a>';
+	const cuzkAttr = '&copy; <a href="https://geoportal.cuzk.cz" target="_blank">ČÚZK</a>';
+	const kartverketAttr = '&copy; <a href="https://www.kartverket.no/">Kartverket</a>';
 	const geoportailAttr = '&copy; <a href="https://www.geoportail.gouv.fr/">Geoportail</a>';
 	const mtbMapNOAttr = osmAttr + ', Tiles courtesy of <a href="https://mtbmap.no/" target="_blank">mtbmap.no</a>';
 
