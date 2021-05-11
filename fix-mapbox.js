@@ -42,16 +42,19 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 			const s = `${type}_overlay`;
 			if (!map.getSource(s))
 				map.addSource(s, sourceFromLeaflet(l.overlay));
-			if (map.getLayer("map-switcher-overlay"))
-				map.removeLayer("map-switcher-overlay");
 			map.addLayer({id: "map-switcher-overlay", type: "raster", source: s}, before);
 		}
 
 		if (!map.getSource(type))
 			map.addSource(type, sourceFromLeaflet(l));
+		map.addLayer({id: "map-switcher", type: "raster", source: type}, l.overlay ? "map-switcher-overlay" : before);
+	}
+
+	function clearMapSwitcherLayers(map) {
+		if (map.getLayer("map-switcher-overlay"))
+			map.removeLayer("map-switcher-overlay");
 		if (map.getLayer("map-switcher"))
 			map.removeLayer("map-switcher");
-		map.addLayer({id: "map-switcher", type: "raster", source: type}, l.overlay ? "map-switcher-overlay" : before);
 	}
 
 	function clearCompositeLayers(map) {
@@ -68,6 +71,7 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 
 			try {
 				if (!map.getLayer("map-switcher") && mapType) {
+					clearMapSwitcherLayers(map);
 					layerFromLeaflet(map, mapType, "heat");
 				}
 			} catch (e) {
@@ -137,6 +141,7 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 			if (t && !AdditionalMapLayers[t])
 				return;
 
+			clearMapSwitcherLayers(map);
 			localStorage.stravaMapSwitcherPreferred = t;
 
 			if (t) {
