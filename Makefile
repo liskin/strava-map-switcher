@@ -1,6 +1,6 @@
 .PHONY: zip
 zip:
-	git archive -o strava-map-switcher-$(shell git describe).zip @
+	git archive -o $(notdir $(CURDIR))-$(shell git describe).zip @
 
 .PHONY: release
 release:

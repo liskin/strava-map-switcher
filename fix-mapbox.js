@@ -42,16 +42,19 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 			const s = `${type}_overlay`;
 			if (!map.getSource(s))
 				map.addSource(s, sourceFromLeaflet(l.overlay));
-			if (map.getLayer("map-switcher-overlay"))
-				map.removeLayer("map-switcher-overlay");
 			map.addLayer({id: "map-switcher-overlay", type: "raster", source: s}, before);
 		}
 
 		if (!map.getSource(type))
 			map.addSource(type, sourceFromLeaflet(l));
+		map.addLayer({id: "map-switcher", type: "raster", source: type}, l.overlay ? "map-switcher-overlay" : before);
+	}
+
+	function clearMapSwitcherLayers(map) {
+		if (map.getLayer("map-switcher-overlay"))
+			map.removeLayer("map-switcher-overlay");
 		if (map.getLayer("map-switcher"))
 			map.removeLayer("map-switcher");
-		map.addLayer({id: "map-switcher", type: "raster", source: type}, l.overlay ? "map-switcher-overlay" : before);
 	}
 
 	function clearCompositeLayers(map) {
@@ -68,6 +71,7 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 
 			try {
 				if (!map.getLayer("map-switcher") && mapType) {
+					clearMapSwitcherLayers(map);
 					layerFromLeaflet(map, mapType, "heat");
 				}
 			} catch (e) {
@@ -125,23 +129,27 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 		throw new Error(`timeout ${what}`);
 	}
 
-	async function patchRouteBuilder(mapbox) {
+	async function patchReactMapbox(mapbox) {
 		const map = await wait(function () {
 			let map = null;
 			mapbox.return.memoizedProps.mapboxRef((m) => (map = m, m));
 			return map;
 		});
-		await wait(() => map.getLayer("global-heatmap"));
+		await wait(() => map.getLayer("global-heatmap") || map.getLayer("personal-heatmap"));
 
 		function setMapType(t) {
 			if (t && !AdditionalMapLayers[t])
 				return;
 
+			clearMapSwitcherLayers(map);
 			localStorage.stravaMapSwitcherPreferred = t;
 
 			if (t) {
 				clearCompositeLayers(map);
-				layerFromLeaflet(map, t, map.getLayer("global-heatmap") ? "global-heatmap" : "z-index-1");
+				layerFromLeaflet(map, t,
+					map.getLayer("global-heatmap") ? "global-heatmap" :
+					map.getLayer("personal-heatmap") ? "personal-heatmap" :
+					"z-index-1");
 			}
 		}
 
@@ -180,6 +188,6 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 
 	const mapbox = reactInternalInstance(this);
 	if (mapbox && jQuery('#ftue-routing-settings')) {
-		patchRouteBuilder(mapbox);
+		patchReactMapbox(mapbox);
 	}
 });
