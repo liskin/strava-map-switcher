@@ -125,13 +125,13 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 		throw new Error(`timeout ${what}`);
 	}
 
-	async function patchRouteBuilder(mapbox) {
+	async function patchReactMapbox(mapbox) {
 		const map = await wait(function () {
 			let map = null;
 			mapbox.return.memoizedProps.mapboxRef((m) => (map = m, m));
 			return map;
 		});
-		await wait(() => map.getLayer("global-heatmap"));
+		await wait(() => map.getLayer("global-heatmap") || map.getLayer("personal-heatmap"));
 
 		function setMapType(t) {
 			if (t && !AdditionalMapLayers[t])
@@ -141,7 +141,10 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 
 			if (t) {
 				clearCompositeLayers(map);
-				layerFromLeaflet(map, t, map.getLayer("global-heatmap") ? "global-heatmap" : "z-index-1");
+				layerFromLeaflet(map, t,
+					map.getLayer("global-heatmap") ? "global-heatmap" :
+					map.getLayer("personal-heatmap") ? "personal-heatmap" :
+					"z-index-1");
 			}
 		}
 
@@ -180,6 +183,6 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 
 	const mapbox = reactInternalInstance(this);
 	if (mapbox && jQuery('#ftue-routing-settings')) {
-		patchRouteBuilder(mapbox);
+		patchReactMapbox(mapbox);
 	}
 });
