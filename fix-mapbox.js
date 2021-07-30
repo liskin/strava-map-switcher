@@ -113,29 +113,13 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 		return found ? found[1] : null;
 	}
 
-	function sleep(ms) {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
-
-	async function wait(what) {
-		for (let tries = 0, delay = 100; tries < 60; ++tries, delay = Math.min(delay * 2, 1000)) {
-			const got = what();
-			if (got)
-				return got;
-
-			await sleep(delay);
-		}
-
-		throw new Error(`timeout ${what}`);
-	}
-
 	async function patchReactMapbox(mapbox) {
-		const map = await wait(function () {
+		const map = await MapSwitcher.wait(function () {
 			let map = null;
 			mapbox.return.memoizedProps.mapboxRef((m) => (map = m, m));
 			return map;
 		});
-		await wait(() => map.getLayer("global-heatmap") || map.getLayer("personal-heatmap"));
+		await MapSwitcher.wait(() => map.getLayer("global-heatmap") || map.getLayer("personal-heatmap"));
 
 		function setMapType(t) {
 			if (t && !AdditionalMapLayers[t])
