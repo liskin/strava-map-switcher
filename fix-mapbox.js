@@ -65,6 +65,25 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 	if (window.map && window.idleEvent) {
 		let mapType = null;
 
+		const origMapAddLayer = map.addLayer;
+		map.addLayer = function (...args) {
+			const ret = origMapAddLayer.call(this, ...args);
+
+			// workaround for an error in Strava's addHeatLayer() which throws
+			// an exception before getting to the idleEvent() call
+			if (map.style.sourceCaches === undefined) {
+				const source = sourceName();
+				map.style.sourceCaches = {};
+				map.style.sourceCaches[source] = {
+					_source: {
+						attribution: ''
+					}
+				};
+			}
+
+			return ret;
+		};
+
 		const origIdleEvent = idleEvent;
 		idleEvent = function () {
 			origIdleEvent();
@@ -113,29 +132,25 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 		return found ? found[1] : null;
 	}
 
-	function sleep(ms) {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
-
-	async function wait(what) {
-		for (let tries = 0, delay = 100; tries < 60; ++tries, delay = Math.min(delay * 2, 1000)) {
-			const got = what();
-			if (got)
-				return got;
-
-			await sleep(delay);
-		}
-
-		throw new Error(`timeout ${what}`);
-	}
-
-	async function patchReactMapbox(mapbox) {
-		const map = await wait(function () {
+	async function mapFromReactInternalInstance(mapbox) {
+		return await MapSwitcher.wait(function () {
 			let map = null;
-			mapbox.return.memoizedProps.mapboxRef((m) => (map = m, m));
+			mapbox?.return?.memoizedProps?.mapboxRef((m) => (map = m, m));
 			return map;
 		});
-		await wait(() => map.getLayer("global-heatmap") || map.getLayer("personal-heatmap"));
+	}
+
+	function reactFiber(e) {
+		const found = Object.entries(e).find(([k, _]) => k.startsWith('__reactFiber$'));
+		return found ? found[1] : null;
+	}
+
+	async function mapFromReactFiber(mapbox) {
+		return await MapSwitcher.wait(() => mapbox?.pendingProps?.children?.props?.value?.map);
+	}
+
+	async function patchReactMapbox(map) {
+		await MapSwitcher.wait(() => map.getLayer("global-heatmap") || map.getLayer("personal-heatmap"));
 
 		function setMapType(t) {
 			if (t && !AdditionalMapLayers[t])
@@ -186,8 +201,13 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 			setTimeout(() => setMapType(preferredMap));
 	}
 
-	const mapbox = reactInternalInstance(this);
-	if (mapbox && jQuery('#ftue-routing-settings')) {
-		patchReactMapbox(mapbox);
+	const mapboxReactInternalInstance = reactInternalInstance(this);
+	if (mapboxReactInternalInstance) {
+		mapFromReactInternalInstance(mapboxReactInternalInstance).then(patchReactMapbox);
+	}
+
+	const mapboxReactFiber = reactFiber(this);
+	if (mapboxReactFiber) {
+		mapFromReactFiber(mapboxReactFiber).then(patchReactMapbox);
 	}
 });

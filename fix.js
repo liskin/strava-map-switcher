@@ -11,8 +11,10 @@
  */
 
 document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAttributesModification: true}, function () {
-	if (this.mapSwitcherDone) return;
-	this.mapSwitcherDone = true;
+	const leafletContainer = this;
+
+	if (leafletContainer.mapSwitcherDone) return;
+	leafletContainer.mapSwitcherDone = true;
 
 	function tileLayer(l) {
 		var r = L.tileLayer(l.url, l.opts);
@@ -50,8 +52,10 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 		};
 	Object.entries(AdditionalMapLayers).forEach(([type, l]) => layerNames[type] = l.name);
 
-	var activityOpts = jQuery('#map-type-control .options', this);
-	if (activityOpts.length) {
+	MapSwitcher.wait(function () {
+		const q = jQuery('#map-type-control .options', leafletContainer);
+		return q.length ? q : null;
+	}).then(function (activityOpts) {
 		Strava.Maps.CustomControlView.prototype.handleMapTypeSelector = function (t) {
 			const type = this.$$(t.target).data("map-type-id");
 			const selected = this.$("#selected-map");
@@ -108,10 +112,12 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 			activityOpts.removeClass("open-menu");
 			activityOpts.parent().removeClass("active");
 		}
-	}
+	});
 
-	var explorerMapFilters = jQuery('#segment-map-filters form');
-	if (explorerMapFilters.length) {
+	MapSwitcher.wait(function () {
+		const q = jQuery('#segment-map-filters form');
+		return q.length ? q : null;
+	}).then(function (explorerMapFilters) {
 		var once = false;
 		function explorerFound(e) {
 			if (once)
@@ -160,5 +166,5 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 			Strava.Explorer.Navigation.prototype.navigate = old_navigate;
 		};
 		explorerMapFilters.trigger('submit');
-	}
+	});
 });

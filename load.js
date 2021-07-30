@@ -43,6 +43,7 @@
 
 	loadJQuery().then(() => Promise.all([
 		getScript(getURL('arrive.min.js')),
+		getScript(getURL('common.js')),
 		getScript(getURL('layers.js')),
 		getScript(getURL('donation.js')),
 		ignoreError(loadGoogleMaps().then(() => Promise.all([

@@ -43,7 +43,7 @@ var AdditionalMapLayers;
 			url: "https://mapserver.mapy.cz/winter-m/{z}-{x}-{y}",
 			opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 18, attribution: mapyCzAttr}},
 		mapyczbing: {name: "mapy.cz (Aerial)",
-			url: "https://mapserver.mapy.cz/bing/{z}-{x}-{y}",
+			url: "https://mapserver.mapy.cz/ophoto-m/{z}-{x}-{y}",
 			opts: {minZoom: 2, maxZoom: 20, attribution: mapyCzAttr},
 			overlay:
 				{url: "https://mapserver.mapy.cz/hybrid-trail_bike-m/{z}-{x}-{y}",

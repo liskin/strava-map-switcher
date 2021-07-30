@@ -1,6 +1,6 @@
 {
   "name": "strava-map-switcher",
-  "version": "0.17.0firefox",
+  "version": "0.18.0firefox",
   "manifest_version": 2,
   "description": "Map switcher for Strava website",
   "homepage_url": "https://github.com/liskin/strava-map-switcher",
@@ -26,6 +26,7 @@
     "3rd/leaflet-pegman.min.css",
     "3rd/leaflet-pegman.min.js",
     "arrive.min.js",
+    "common.js",
     "donation.js",
     "fix-mapbox.js",
     "fix.js",
