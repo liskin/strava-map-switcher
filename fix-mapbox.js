@@ -65,6 +65,25 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 	if (window.map && window.idleEvent) {
 		let mapType = null;
 
+		const origMapAddLayer = map.addLayer;
+		map.addLayer = function (...args) {
+			const ret = origMapAddLayer.call(this, ...args);
+
+			// workaround for an error in Strava's addHeatLayer() which throws
+			// an exception before getting to the idleEvent() call
+			if (map.style.sourceCaches === undefined) {
+				const source = sourceName();
+				map.style.sourceCaches = {};
+				map.style.sourceCaches[source] = {
+					_source: {
+						attribution: ''
+					}
+				};
+			}
+
+			return ret;
+		};
+
 		const origIdleEvent = idleEvent;
 		idleEvent = function () {
 			origIdleEvent();
