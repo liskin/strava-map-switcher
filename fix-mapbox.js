@@ -132,12 +132,24 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 		return found ? found[1] : null;
 	}
 
-	async function patchReactMapbox(mapbox) {
-		const map = await MapSwitcher.wait(function () {
+	async function mapFromReactInternalInstance(mapbox) {
+		return await MapSwitcher.wait(function () {
 			let map = null;
-			mapbox.return.memoizedProps.mapboxRef((m) => (map = m, m));
+			mapbox?.return?.memoizedProps?.mapboxRef((m) => (map = m, m));
 			return map;
 		});
+	}
+
+	function reactFiber(e) {
+		const found = Object.entries(e).find(([k, _]) => k.startsWith('__reactFiber$'));
+		return found ? found[1] : null;
+	}
+
+	async function mapFromReactFiber(mapbox) {
+		return await MapSwitcher.wait(() => mapbox?.pendingProps?.children?.props?.value?.map);
+	}
+
+	async function patchReactMapbox(map) {
 		await MapSwitcher.wait(() => map.getLayer("global-heatmap") || map.getLayer("personal-heatmap"));
 
 		function setMapType(t) {
@@ -189,8 +201,13 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 			setTimeout(() => setMapType(preferredMap));
 	}
 
-	const mapbox = reactInternalInstance(this);
-	if (mapbox && jQuery('#ftue-routing-settings')) {
-		patchReactMapbox(mapbox);
+	const mapboxReactInternalInstance = reactInternalInstance(this);
+	if (mapboxReactInternalInstance) {
+		mapFromReactInternalInstance(mapboxReactInternalInstance).then(patchReactMapbox);
+	}
+
+	const mapboxReactFiber = reactFiber(this);
+	if (mapboxReactFiber) {
+		mapFromReactFiber(mapboxReactFiber).then(patchReactMapbox);
 	}
 });
