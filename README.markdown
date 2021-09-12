@@ -20,9 +20,8 @@ please consider [a small donation](https://www.paypal.me/lisknisi/10EUR) or
 By donating, you'll also support the development of my other projects. You
 might like these:
 
-* <https://github.com/liskin/strava-offline> - Keep a local mirror of Strava activities for further analysis/processing
-* <https://github.com/liskin/locus-graphhopper-gpx> - Convert GraphHopper JSON to GPX with Locus nav. instructions
-* <https://github.com/liskin/leaflet-tripreport> - A simple tool for visualization of bikepacking trips, both planned and ridden
+* [strava-offline](https://github.com/liskin/strava-offline) – Keep a local mirror of Strava activities for further analysis/processing
+* [strava-gear](https://github.com/liskin/strava-gear) – Rule based tracker of gear and component wear primarily for Strava
 
 ## Installation
 
