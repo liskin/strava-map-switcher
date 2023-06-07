@@ -208,6 +208,6 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 
 	const mapboxReactFiber = reactFiber(this);
 	if (mapboxReactFiber) {
-		mapFromReactFiber(mapboxReactFiber).then(patchReactMapbox);
+		mapFromReactInternalInstance(mapboxReactFiber).then(patchReactMapbox);
 	}
 });
