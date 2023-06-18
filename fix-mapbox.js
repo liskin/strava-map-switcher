@@ -61,6 +61,16 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 		map.getStyle().layers.filter(l => l.source == "composite").map(l => l.id).forEach(l => map.removeLayer(l));
 	}
 
+	function mapSwitcherSelect(setMapType) {
+		const preferredMap = localStorage.stravaMapSwitcherPreferred;
+		const select = jQuery('<select>');
+		select.change(e => setMapType(e.target.value));
+		select.append(jQuery(`<option value="">`).text("---"));
+		Object.entries(AdditionalMapLayers).forEach(
+			([type, l]) => select.append(jQuery(`<option value="${type}" ${type == preferredMap ? "selected" : ""}>`).text(l.name)));
+		return select;
+	}
+
 	// heatmap
 	if (window.map && window.idleEvent) {
 		let mapType = null;
@@ -108,31 +118,19 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 			updateMapStyles();
 		}
 
-		const preferredMap = localStorage.stravaMapSwitcherPreferred;
-
 		const sidebar = jQuery('#js-sidebar-content div.section:first');
 		sidebar.append(jQuery('<h5>Maps</h5>'));
-
-		const select = jQuery('<select>');
-		select.change(e => setMapType(e.target.value));
-		select.append(jQuery(`<option value="">`).text("---"));
-		Object.entries(AdditionalMapLayers).forEach(
-			([type, l]) => select.append(jQuery(`<option value="${type}" ${type == preferredMap ? "selected" : ""}>`).text(l.name)));
-		sidebar.append(jQuery('<div>').append(select));
+		sidebar.append(jQuery('<div>').append(mapSwitcherSelect(setMapType)));
 
 		if (MapSwitcherDonation)
 			sidebar.append(jQuery('<div>').append(MapSwitcherDonation));
 
+		const preferredMap = localStorage.stravaMapSwitcherPreferred;
 		if (preferredMap)
 			setTimeout(() => setMapType(preferredMap));
 	}
 
-	function reactInternalInstance(e) {
-		const found = Object.entries(e).find(([k, _]) => k.startsWith('__reactInternalInstance$'));
-		return found ? found[1] : null;
-	}
-
-	async function mapFromReactInternalInstance(mapbox) {
+	async function mapFromReactFiber(mapbox) {
 		return await MapSwitcher.wait(function () {
 			let map = null;
 			mapbox?.return?.memoizedProps?.mapboxRef((m) => (map = m, m));
@@ -145,8 +143,96 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 		return found ? found[1] : null;
 	}
 
-	async function mapFromReactFiber(mapbox) {
-		return await MapSwitcher.wait(() => mapbox?.pendingProps?.children?.props?.value?.map);
+	function observeChildList(targetNode, callback) {
+		const observer = new MutationObserver(callback);
+		observer.observe(targetNode, {childList: true});
+	}
+
+	function findPersonalHeatmapSidebar() {
+		const main = document.getElementById('main');
+		if (main) {
+			return [...main.children].find((e) => e.className.startsWith("heatmaps_sidebar"));
+		}
+	}
+
+	function patchPersonalHeatmapSidebar(setMapType) {
+		if (document.getElementById('mapSwitcherSidebar'))
+			return;
+
+		const sidebar = jQuery(findPersonalHeatmapSidebar());
+		if (!sidebar.length)
+			return;
+
+		const nav = jQuery('<div id="mapSwitcherSidebar">').css({
+			padding: "12px 16px",
+		});
+		sidebar.append(nav);
+
+		nav.append(jQuery('<h4>Map Switcher</h4>').css({margin: 0}));
+		nav.append(jQuery('<div>').append(mapSwitcherSelect(setMapType)));
+
+		if (MapSwitcherDonation)
+			nav.append(jQuery('<div>').append(MapSwitcherDonation));
+
+		return true;
+	}
+
+	function findRouteBuilderSidebar() {
+		const main = document.getElementById('main');
+		if (main) {
+			return [...main.children].find((e) => e.className.startsWith("RouteBuilder_sidebar"));
+		}
+	}
+
+	function patchRouteBuilderSidebar(setMapType, initial = null) {
+		if (document.getElementById('mapSwitcherSidebar'))
+			return;
+
+		const sidebar = findRouteBuilderSidebar();
+		if (!sidebar)
+			return;
+
+		if (initial)
+			observeChildList(sidebar, () => patchRouteBuilderSidebar(setMapType));
+
+		const sidebarLastDiv = jQuery(sidebar).children('div').last();
+		if (!sidebarLastDiv.length)
+			return;
+
+		const nav = jQuery('<div id="mapSwitcherSidebar">');
+		sidebarLastDiv.children('div').append(nav);
+
+		nav.append(jQuery('<h4>Map Switcher</h4>').css({margin: 0}));
+		nav.append(jQuery('<div>').append(mapSwitcherSelect(setMapType)));
+
+		if (MapSwitcherDonation)
+			nav.append(jQuery('<div>').append(MapSwitcherDonation));
+
+		return true;
+	}
+
+	function fallbackSwitcher(setMapType) {
+		const nav = jQuery('<div>').css({
+			"position": "absolute",
+			"top": 0,
+			"left": 0,
+			"right": 0,
+			"margin-left": "auto",
+			"margin-right": "auto",
+			"width": "30em",
+			"padding": "1ex",
+			"background-color": "#ddd",
+			"border": "1px solid #888",
+		});
+
+		nav.append(mapSwitcherSelect(setMapType));
+
+		if (MapSwitcherDonation) {
+			nav.append(jQuery('<span>&emsp;</span>'));
+			nav.append(MapSwitcherDonation);
+		}
+
+		jQuery('body').append(nav);
 	}
 
 	async function patchReactMapbox(map) {
@@ -169,41 +255,12 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 		}
 
 		const preferredMap = localStorage.stravaMapSwitcherPreferred;
-
-		const nav = jQuery('<div>').css({
-			"position": "absolute",
-			"top": 0,
-			"left": 0,
-			"right": 0,
-			"margin-left": "auto",
-			"margin-right": "auto",
-			"width": "30em",
-			"padding": "1ex",
-			"background-color": "#ddd",
-			"border": "1px solid #888",
-		});
-
-		const select = jQuery('<select>');
-		select.change(e => setMapType(e.target.value));
-		select.append(jQuery(`<option value="">`).text("---"));
-		Object.entries(AdditionalMapLayers).forEach(
-			([type, l]) => select.append(jQuery(`<option value="${type}" ${type == preferredMap ? "selected" : ""}>`).text(l.name)));
-		nav.append(select);
-
-		if (MapSwitcherDonation) {
-			nav.append(jQuery('<span>&emsp;</span>'));
-			nav.append(MapSwitcherDonation);
-		}
-
-		jQuery('body').append(nav);
-
 		if (preferredMap)
 			setTimeout(() => setMapType(preferredMap));
-	}
 
-	const mapboxReactInternalInstance = reactInternalInstance(this);
-	if (mapboxReactInternalInstance) {
-		mapFromReactInternalInstance(mapboxReactInternalInstance).then(patchReactMapbox);
+		patchPersonalHeatmapSidebar(setMapType)
+			|| patchRouteBuilderSidebar(setMapType, true)
+			|| fallbackSwitcher(setMapType);
 	}
 
 	const mapboxReactFiber = reactFiber(this);

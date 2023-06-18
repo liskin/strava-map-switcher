@@ -20,9 +20,8 @@ please consider [a small donation](https://www.paypal.me/lisknisi/10EUR) or
 By donating, you'll also support the development of my other projects. You
 might like these:
 
-* <https://github.com/liskin/strava-offline> - Keep a local mirror of Strava activities for further analysis/processing
-* <https://github.com/liskin/locus-graphhopper-gpx> - Convert GraphHopper JSON to GPX with Locus nav. instructions
-* <https://github.com/liskin/leaflet-tripreport> - A simple tool for visualization of bikepacking trips, both planned and ridden
+* [strava-offline](https://github.com/liskin/strava-offline) – Keep a local mirror of Strava activities for further analysis/processing
+* [strava-gear](https://github.com/liskin/strava-gear) – Rule based tracker of gear and component wear primarily for Strava
 
 ## Installation
 
@@ -33,7 +32,7 @@ might like these:
    ([ViolentMonkey](https://violentmonkey.github.io/get-it/),
    [GreaseMonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/))
  - <details><summary><a href="https://en.wikipedia.org/wiki/Bookmarklet">bookmarklet</a></summary><pre><code>
-   javascript:{const s = document.createElement("script"); s.src = 'https://rawgit.com/liskin/strava-map-switcher/master/load.js'; s.type = 'text/javascript'; document.body.appendChild(s);};void(0);
+   javascript:{const s = document.createElement("script"); s.src = 'https://cdn.jsdelivr.net/gh/liskin/strava-map-switcher@master/load.js'; s.type = 'text/javascript'; document.body.appendChild(s);};void(0);
    </code></pre></details>
 
 ## Screenshots
