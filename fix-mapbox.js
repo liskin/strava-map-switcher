@@ -127,12 +127,7 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 			setTimeout(() => setMapType(preferredMap));
 	}
 
-	function reactInternalInstance(e) {
-		const found = Object.entries(e).find(([k, _]) => k.startsWith('__reactInternalInstance$'));
-		return found ? found[1] : null;
-	}
-
-	async function mapFromReactInternalInstance(mapbox) {
+	async function mapFromReactFiber(mapbox) {
 		return await MapSwitcher.wait(function () {
 			let map = null;
 			mapbox?.return?.memoizedProps?.mapboxRef((m) => (map = m, m));
@@ -143,10 +138,6 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 	function reactFiber(e) {
 		const found = Object.entries(e).find(([k, _]) => k.startsWith('__reactFiber$'));
 		return found ? found[1] : null;
-	}
-
-	async function mapFromReactFiber(mapbox) {
-		return await MapSwitcher.wait(() => mapbox?.pendingProps?.children?.props?.value?.map);
 	}
 
 	async function patchReactMapbox(map) {
@@ -199,11 +190,6 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 
 		if (preferredMap)
 			setTimeout(() => setMapType(preferredMap));
-	}
-
-	const mapboxReactInternalInstance = reactInternalInstance(this);
-	if (mapboxReactInternalInstance) {
-		mapFromReactInternalInstance(mapboxReactInternalInstance).then(patchReactMapbox);
 	}
 
 	const mapboxReactFiber = reactFiber(this);
