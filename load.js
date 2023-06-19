@@ -56,5 +56,6 @@
 	])).then(function () {
 		getScript(getURL('fix.js'));
 		getScript(getURL('fix-mapbox.js'));
+		getCSS(getURL('fix-mapbox.css'));
 	});
 }

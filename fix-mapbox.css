@@ -1,0 +1,27 @@
+.map-switcher-control-select {
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    background-image: url("data:image/svg+xml;utf8,<svg height='16' width='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='M8 12a.5.5 0 01-.35-.15l-6.5-6.5a.5.5 0 01.71-.71L8 10.79l6.15-6.15a.5.5 0 11.71.71l-6.5 6.5A.5.5 0 018 12z' fill='rgba(0,0,0,0.75)'/></svg>");
+    background-position: right 8px center;
+    background-repeat: no-repeat;
+    background-size: 12px 12px;
+    padding: 6px 26px 5px 12px;
+}
+
+.map-switcher-control-select:not(:disabled):hover {
+    background-color: rgba(0,0,0,.05)
+}
+
+.map-switcher-control-select:focus:focus-visible {
+    box-shadow: 0 0 2px 2px #0096ff
+}
+
+.map-switcher-control-select:focus:not(:focus-visible) {
+    box-shadow: none
+}

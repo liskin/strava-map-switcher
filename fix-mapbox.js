@@ -61,79 +61,15 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 		map.getStyle().layers.filter(l => l.source == "composite").map(l => l.id).forEach(l => map.removeLayer(l));
 	}
 
-	// heatmap
-	if (window.map && window.idleEvent) {
-		let mapType = null;
-
-		const origMapAddLayer = map.addLayer;
-		map.addLayer = function (...args) {
-			const ret = origMapAddLayer.call(this, ...args);
-
-			// workaround for an error in Strava's addHeatLayer() which throws
-			// an exception before getting to the idleEvent() call
-			if (map.style.sourceCaches === undefined) {
-				const source = sourceName();
-				map.style.sourceCaches = {};
-				map.style.sourceCaches[source] = {
-					_source: {
-						attribution: ''
-					}
-				};
-			}
-
-			return ret;
-		};
-
-		const origIdleEvent = idleEvent;
-		idleEvent = function () {
-			origIdleEvent();
-
-			try {
-				if (!map.getLayer("map-switcher") && mapType) {
-					clearMapSwitcherLayers(map);
-					layerFromLeaflet(map, mapType, "heat");
-				}
-			} catch (e) {
-				console.log(`idleEvent: ${e}`);
-			}
-		};
-
-		function setMapType(t) {
-			if (t && !AdditionalMapLayers[t])
-				return;
-
-			localStorage.stravaMapSwitcherPreferred = t;
-			mapType = t;
-			state.prevStyle = null;
-			updateMapStyles();
-		}
-
-		const preferredMap = localStorage.stravaMapSwitcherPreferred;
-
-		const sidebar = jQuery('#js-sidebar-content div.section:first');
-		sidebar.append(jQuery('<h5>Maps</h5>'));
-
-		const select = jQuery('<select>');
-		select.change(e => setMapType(e.target.value));
-		select.append(jQuery(`<option value="">`).text("---"));
-		Object.entries(AdditionalMapLayers).forEach(
-			([type, l]) => select.append(jQuery(`<option value="${type}" ${type == preferredMap ? "selected" : ""}>`).text(l.name)));
-		sidebar.append(jQuery('<div>').append(select));
-
-		if (MapSwitcherDonation)
-			sidebar.append(jQuery('<div>').append(MapSwitcherDonation));
-
-		if (preferredMap)
-			setTimeout(() => setMapType(preferredMap));
-	}
-
 	async function mapFromReactFiber(mapbox) {
 		return await MapSwitcher.wait(function () {
 			let map = null;
-			mapbox?.return?.memoizedProps?.mapboxRef((m) => (map = m, m));
+			mapbox?.return?.memoizedProps?.mapboxRef((m) => (map = m, m)); // edit screen
+			if (!map)
+				map = mapbox?.child?.memoizedProps?.value?.map; // route preview screen
 			return map;
-	 	});
-	 }
+		});
+	}
 
 	function reactFiber(e) {
 		const found = Object.entries(e).find(([k, _]) => k.startsWith('__reactFiber$'));
@@ -141,59 +77,78 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 	}
 
 	async function patchReactMapbox(map) {
-		await MapSwitcher.wait(() => map.getLayer("global-heatmap") || map.getLayer("personal-heatmap"));
 
-		function setMapType(t) {
-			if (t && !AdditionalMapLayers[t])
-				return;
+		await MapSwitcher.wait(() =>
+			map.getLayer("global-heatmap") ||
+			map.getLayer("personal-heatmap") ||
+			map.getLayer("directional-polyline-empty-base-layer"));
 
-			clearMapSwitcherLayers(map);
-			localStorage.stravaMapSwitcherPreferred = t;
-
-			if (t) {
-				clearCompositeLayers(map);
-				layerFromLeaflet(map, t,
-					map.getLayer("global-heatmap") ? "global-heatmap" :
-					map.getLayer("personal-heatmap") ? "personal-heatmap" :
-					"z-index-1");
-			}
-		}
-
-		const preferredMap = localStorage.stravaMapSwitcherPreferred;
-
-		const nav = jQuery('<div>').css({
-			"position": "absolute",
-			"top": 0,
-			"left": 0,
-			"right": 0,
-			"margin-left": "auto",
-			"margin-right": "auto",
-			"width": "30em",
-			"padding": "1ex",
-			"background-color": "#ddd",
-			"border": "1px solid #888",
-		});
-
-		const select = jQuery('<select>');
-		select.change(e => setMapType(e.target.value));
-		select.append(jQuery(`<option value="">`).text("---"));
-		Object.entries(AdditionalMapLayers).forEach(
-			([type, l]) => select.append(jQuery(`<option value="${type}" ${type == preferredMap ? "selected" : ""}>`).text(l.name)));
-		nav.append(select);
-
-		if (MapSwitcherDonation) {
-			nav.append(jQuery('<span>&emsp;</span>'));
-			nav.append(MapSwitcherDonation);
-		}
-
-		jQuery('body').append(nav);
-
-		if (preferredMap)
-			setTimeout(() => setMapType(preferredMap));
+		addMapSwitcherControl(map);
 	}
 
 	const mapboxReactFiber = reactFiber(this);
 	if (mapboxReactFiber) {
 		mapFromReactFiber(mapboxReactFiber).then(patchReactMapbox);
+	}
+
+	function addMapSwitcherControl(map) {
+		class MapSwitcherControl {
+
+			onAdd(map) {
+				const preferredMap = localStorage.stravaMapSwitcherPreferred;
+
+				this._map = map;
+				this._nav = document.createElement("div");
+				this._nav.className = "mapboxgl-ctrl mapboxgl-ctrl-group";
+				const select = document.createElement("select");
+				select.className = "map-switcher-control-select";
+
+				function setMapType(t) {
+					clearMapSwitcherLayers(this._map);
+
+					if (t && !AdditionalMapLayers[t])
+						return;
+
+					localStorage.stravaMapSwitcherPreferred = t;
+
+					if (t) {
+						clearCompositeLayers(this._map);
+						layerFromLeaflet(this._map, t,
+							this._map.getLayer("global-heatmap") ? "global-heatmap" :
+								this._map.getLayer("personal-heatmap") ? "personal-heatmap" :
+									"directional-polyline-empty-base-layer");
+					}
+				}
+
+				select.addEventListener("change", e => { setMapType(e.target.value); })
+
+				const option = document.createElement("option");
+				option.value = "";
+				option.text = "---";
+				select.appendChild(option);
+
+				Object.entries(AdditionalMapLayers).forEach(
+					([type, l]) => {
+						const option = document.createElement("option");
+						option.value = type;
+						option.selected = (type === preferredMap);
+						option.text = l.name;
+					select.appendChild(option);
+				});
+				this._nav.appendChild(select);
+
+				if (preferredMap)
+					setTimeout(() => setMapType(preferredMap));
+
+				return this._nav;
+			}
+
+			onRemove() {
+				this._nav.parentNode.removeChild(this._nav);
+				this._map = undefined;
+			}
+		}
+
+		map.addControl(new MapSwitcherControl(), "top-right");
 	}
 });

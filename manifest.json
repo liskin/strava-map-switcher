@@ -1,5 +1,5 @@
 {
-  "name": "strava-map-switcher",
+  "name": "strava-map-switcher-fork",
   "version": "0.18",
   "manifest_version": 2,
   "description": "Map switcher for Strava website",
@@ -31,7 +31,8 @@
     "fix-mapbox.js",
     "fix.js",
     "layers.js",
-    "load.js"
+    "load.js",
+    "fix-mapbox.css"
   ],
   "browser_specific_settings": {
     "gecko": {
