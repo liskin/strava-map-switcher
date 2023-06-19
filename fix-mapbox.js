@@ -97,14 +97,13 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 			onAdd(map) {
 				const preferredMap = localStorage.stravaMapSwitcherPreferred;
 
-				this._map = map;
-				this._nav = document.createElement("div");
-				this._nav.className = "mapboxgl-ctrl mapboxgl-ctrl-group";
+				this.nav = document.createElement("div");
+				this.nav.className = "mapboxgl-ctrl mapboxgl-ctrl-group";
 				const select = document.createElement("select");
 				select.className = "map-switcher-control-select";
 
 				function setMapType(t) {
-					clearMapSwitcherLayers(this._map);
+					clearMapSwitcherLayers(map);
 
 					if (t && !AdditionalMapLayers[t])
 						return;
@@ -112,10 +111,10 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 					localStorage.stravaMapSwitcherPreferred = t;
 
 					if (t) {
-						clearCompositeLayers(this._map);
-						layerFromLeaflet(this._map, t,
-							this._map.getLayer("global-heatmap") ? "global-heatmap" :
-								this._map.getLayer("personal-heatmap") ? "personal-heatmap" :
+						clearCompositeLayers(map);
+						layerFromLeaflet(map, t,
+							map.getLayer("global-heatmap") ? "global-heatmap" :
+								map.getLayer("personal-heatmap") ? "personal-heatmap" :
 									"directional-polyline-empty-base-layer");
 					}
 				}
@@ -135,17 +134,16 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 						option.text = l.name;
 					select.appendChild(option);
 				});
-				this._nav.appendChild(select);
+				this.nav.appendChild(select);
 
 				if (preferredMap)
 					setTimeout(() => setMapType(preferredMap));
 
-				return this._nav;
+				return this.nav;
 			}
 
 			onRemove() {
-				this._nav.parentNode.removeChild(this._nav);
-				this._map = undefined;
+				this.nav.parentNode.removeChild(this.nav);
 			}
 		}
 
