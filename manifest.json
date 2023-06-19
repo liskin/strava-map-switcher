@@ -46,7 +46,8 @@
         "fix-mapbox.js",
         "fix.js",
         "layers.js",
-        "load.js"
+        "load.js",
+        "fix-mapbox.css"
       ],
       "matches": [
         "https://www.strava.com/*"
