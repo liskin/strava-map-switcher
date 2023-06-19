@@ -32,7 +32,7 @@ might like these:
    ([ViolentMonkey](https://violentmonkey.github.io/get-it/),
    [GreaseMonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/))
  - <details><summary><a href="https://en.wikipedia.org/wiki/Bookmarklet">bookmarklet</a></summary><pre><code>
-   javascript:{const s = document.createElement("script"); s.src = 'https://rawgit.com/liskin/strava-map-switcher/master/load.js'; s.type = 'text/javascript'; document.body.appendChild(s);};void(0);
+   javascript:{const s = document.createElement("script"); s.src = 'https://cdn.jsdelivr.net/gh/liskin/strava-map-switcher@master/load.js'; s.type = 'text/javascript'; document.body.appendChild(s);};void(0);
    </code></pre></details>
 
 ## Screenshots

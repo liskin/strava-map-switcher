@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://mapy.cz/"
+        },
+        {
+          "header": "origin",
+          "operation": "remove"
+        }
+      ]
+    },
+    "condition": {
+      "initiatorDomains": ["www.strava.com"],
+      "urlFilter": "||mapserver.mapy.cz/*/*-*-*"
+    }
+  }
+]
