@@ -61,7 +61,7 @@ var AdditionalMapLayers;
 			url: "https://mtbmap.no/tiles/osm/mtbmap/{z}/{x}/{y}.jpg",
 			opts: {minZoom: 1, maxZoom: 20, maxNativeZoom: 16, attribution: mtbMapNOAttr}},
 		kartverket: {name: "Kartverket [NO]",
-			url: "https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}",
+			url: "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png",
 			opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 18, attribution: kartverketAttr}},
 		geoportail: {name: "Geoportail Aerial [FR]",
 			url: "https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=ORTHOIMAGERY.ORTHOPHOTOS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix={z}&TileCol={x}&TileRow={y}",
