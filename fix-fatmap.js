@@ -1,5 +1,5 @@
 /*
- * Map switcher for Strava website - Fatmap engine support.
+ * Map switcher for Strava website - Fatmap/MRE engine support.
  */
 {
     async function getFatmapEngine() {
@@ -60,23 +60,56 @@
             'max-height:80vh', 'min-width:160px', 'overflow:hidden',
         ].join(';');
 
+        // --- Donation-Link (kein jQuery) ---
+        function makeDonationLink() {
+            const lastClick = localStorage.stravaMapSwitcherLastDonationClick;
+            const clickedRecently = lastClick && (Date.now() - lastClick) < 1000 * 86400 * 180;
+            const lastVer = localStorage.stravaMapSwitcherLastDonationVersion;
+            const thisVer = localStorage.stravaMapSwitcherVersion;
+            const clickedThisVersion = !thisVer || (lastVer && thisVer === lastVer);
+
+            const a = document.createElement('a');
+            a.target = '_blank';
+            a.style.cssText = 'font-size:10px;color:#aaa;text-decoration:none;display:block;margin-top:1px;';
+            a.onmouseenter = () => a.style.color = '#fc4c02';
+            a.onmouseleave = () => a.style.color = '#aaa';
+
+            if (!clickedRecently || !clickedThisVersion) {
+                a.href = 'https://www.paypal.me/lisknisi/10EUR';
+                a.textContent = '♥ support this extension';
+                a.onclick = () => {
+                    localStorage.stravaMapSwitcherLastDonationClick = Date.now();
+                    localStorage.stravaMapSwitcherLastDonationVersion = thisVer;
+                };
+            } else {
+                a.href = 'https://github.com/liskin/strava-map-switcher#readme';
+                a.textContent = 'strava-map-switcher';
+            }
+            return a;
+        }
+
         // --- Header (Titel + Toggle) ---
         const header = document.createElement('div');
         header.style.cssText = [
             'display:flex', 'align-items:center', 'justify-content:space-between',
             'padding:5px 8px', 'cursor:pointer', 'user-select:none',
             'background:#f8f8f8', 'border-bottom:1px solid #ddd',
-            'font-weight:bold', 'font-size:11px', 'color:#333',
         ].join(';');
 
-        const title = document.createElement('span');
+        const titleWrap = document.createElement('div');
+
+        const title = document.createElement('div');
         title.textContent = 'Strava Map Switcher';
+        title.style.cssText = 'font-weight:bold;font-size:11px;color:#333;';
+
+        titleWrap.appendChild(title);
+        titleWrap.appendChild(makeDonationLink());
 
         const arrow = document.createElement('span');
         arrow.textContent = '▲';
-        arrow.style.cssText = 'font-size:9px;margin-left:6px;transition:transform 0.2s;';
+        arrow.style.cssText = 'font-size:9px;margin-left:6px;transition:transform 0.2s;color:#999;align-self:flex-start;margin-top:2px;';
 
-        header.appendChild(title);
+        header.appendChild(titleWrap);
         header.appendChild(arrow);
 
         // --- Body (scrollbarer Inhalt) ---
