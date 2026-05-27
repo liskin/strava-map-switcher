@@ -2,21 +2,37 @@
  * Map switcher for Strava website - Fatmap/MRE engine support.
  */
 {
-    async function getFatmapEngine() {
-        return await MapSwitcher.wait(() => {
-            const canvas = document.querySelector('canvas[data-testid="mre-canvas"]');
-            if (!canvas) return null;
-            const fiberKey = Object.keys(canvas).find(k => k.startsWith('__react'));
-            if (!fiberKey) return null;
-            let node = canvas[fiberKey];
-            for (let i = 0; i < 50; i++) {
-                node = node?.return;
-                if (!node) break;
-                const val = node?.memoizedProps?.value;
-                if (val?.terrainEngine) return val.terrainEngine;
+    // WASM-Exceptions aus dem Emscripten-Render-Loop abfangen,
+    // damit der Route Builder bei nicht erreichbaren Tile-Layern nicht abstürzt
+    const _raf = window.requestAnimationFrame.bind(window);
+    window.requestAnimationFrame = (cb) => _raf((...args) => {
+        try { cb(...args); }
+        catch(e) {
+            if (typeof e === 'number') {
+                console.warn('[MapSwitcher] WASM exception unterdrückt:', e);
+            } else {
+                throw e;
             }
-            return null;
-        });
+        }
+    });
+
+    function getFreshEngine() {
+        const canvas = document.querySelector('canvas[data-testid="mre-canvas"]');
+        if (!canvas) return null;
+        const fiberKey = Object.keys(canvas).find(k => k.startsWith('__react'));
+        if (!fiberKey) return null;
+        let node = canvas[fiberKey];
+        for (let i = 0; i < 50; i++) {
+            node = node?.return;
+            if (!node) break;
+            const val = node?.memoizedProps?.value;
+            if (val?.terrainEngine) return val.terrainEngine;
+        }
+        return null;
+    }
+
+    async function getFatmapEngine() {
+        return await MapSwitcher.wait(getFreshEngine);
     }
 
     async function patchFatmap() {
@@ -25,29 +41,32 @@
         const originalUrls = {};
         ts.getTileSources().forEach(s => { originalUrls[s.name] = s.templateUrl; });
 
-        const nativeTypes = [
-            {name: 'Standard',  type: 0},
-            {name: 'Dark',      type: 1},
-            {name: 'Winter',    type: 2},
-            {name: 'Hybrid',    type: 3},
-            {name: 'Satellite', type: 4},
-        ];
+        let currentKey = null;
 
         function setLayer(key) {
-            const native = nativeTypes.find(n => n.name === key);
-            if (native) {
-                ts.setTileSourceTemplateUrl('winter-overlay-imagery', originalUrls['winter-overlay-imagery']);
-                te.setMapType(native.type);
-                te.requestRender();
-                return;
-            }
             const layer = AdditionalMapLayers[key];
             if (!layer) return;
-            ts.setTileSourceTemplateUrl('winter-overlay-imagery', layer.url);
-            te.setMapType(0);
-            te.update();
-            te.setMapType(2);
-            te.requestRender();
+            try {
+                ts.setTileSourceTemplateUrl('winter-overlay-imagery', layer.url);
+                getFreshEngine().getDebugApi().clearCache();
+                getFreshEngine().setMapType(2);
+                getFreshEngine().requestRender();
+                currentKey = key;
+            } catch (e) {
+                console.warn('[MapSwitcher] setLayer failed:', e);
+                // restore previous layer if available, otherwise fallback to original URL
+                if (currentKey && currentKey !== key) {
+                    try {
+                        const prev = AdditionalMapLayers[currentKey];
+                        if (prev) ts.setTileSourceTemplateUrl('winter-overlay-imagery', prev.url);
+                    } catch (_) {}
+                } else {
+                    // no previous layer – restore original URL
+                    try {
+                        ts.setTileSourceTemplateUrl('winter-overlay-imagery', originalUrls['winter-overlay-imagery']);
+                    } catch (_) {}
+                }
+            }
         }
 
         // --- Container ---
@@ -60,7 +79,7 @@
             'max-height:80vh', 'min-width:160px', 'overflow:hidden',
         ].join(';');
 
-        // --- Donation-Link (kein jQuery) ---
+        // --- Donation-Link ---
         function makeDonationLink() {
             const lastClick = localStorage.stravaMapSwitcherLastDonationClick;
             const clickedRecently = lastClick && (Date.now() - lastClick) < 1000 * 86400 * 180;
@@ -88,7 +107,7 @@
             return a;
         }
 
-        // --- Header (Titel + Toggle) ---
+        // --- Header ---
         const header = document.createElement('div');
         header.style.cssText = [
             'display:flex', 'align-items:center', 'justify-content:space-between',
@@ -97,11 +116,9 @@
         ].join(';');
 
         const titleWrap = document.createElement('div');
-
         const title = document.createElement('div');
         title.textContent = 'Strava Map Switcher';
         title.style.cssText = 'font-weight:bold;font-size:11px;color:#333;';
-
         titleWrap.appendChild(title);
         titleWrap.appendChild(makeDonationLink());
 
@@ -112,11 +129,10 @@
         header.appendChild(titleWrap);
         header.appendChild(arrow);
 
-        // --- Body (scrollbarer Inhalt) ---
+        // --- Body ---
         const body = document.createElement('div');
         body.style.cssText = 'padding:6px;overflow-y:auto;max-height:calc(80vh - 28px);';
 
-        // Toggle-Logik
         let collapsed = false;
         header.onclick = () => {
             collapsed = !collapsed;
@@ -138,17 +154,8 @@
             body.appendChild(btn);
         }
 
-        function addSeparator() {
-            const hr = document.createElement('hr');
-            hr.style.cssText = 'margin:4px 0;border:none;border-top:1px solid #ddd;';
-            body.appendChild(hr);
-        }
-
-        nativeTypes.forEach(({name}) => addBtn(name, name));
-        addSeparator();
         Object.entries(AdditionalMapLayers).forEach(([key, layer]) => addBtn(layer.name, key));
 
-        // --- Einhängen ---
         const canvas = document.querySelector('canvas[data-testid="mre-canvas"]');
         const mapParent = canvas?.parentElement;
         if (mapParent) {
