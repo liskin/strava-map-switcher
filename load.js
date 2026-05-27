@@ -55,6 +55,6 @@
 		]))),
 	])).then(function () {
 		getScript(getURL('fix.js'));
-		getScript(getURL('fix-mapbox.js'));
+		getScript(getURL('fix-fatmap.js'));
 	});
 }

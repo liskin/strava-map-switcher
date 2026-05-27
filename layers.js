@@ -22,19 +22,20 @@ var AdditionalMapLayers;
 	const kartverketAttr = '&copy; <a href="https://www.kartverket.no/">Kartverket</a>';
 	const geoportailAttr = '&copy; <a href="https://www.geoportail.gouv.fr/">Geoportail</a>';
 	const mtbMapNOAttr = osmAttr + ', Tiles courtesy of <a href="https://mtbmap.no/" target="_blank">mtbmap.no</a>';
+	const swisstopoAttr = '&copy; <a href="https://www.swisstopo.ch/" target="_blank">swisstopo</a>';  
 
 	AdditionalMapLayers = {
 		openstreetmap: {name: "OpenStreetMap",
 			url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			opts: {maxZoom: 20, maxNativeZoom: 19, attribution: osmAttr}},
 		opencyclemap: {name: "OpenCycleMap",
-			url: "https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
+			url: "https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
 			opts: {maxZoom: 20, attribution: thunderforestAttr}},
 		transport: {name: "Transport",
-			url: "https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png",
+			url: "https://a.tile.thunderforest.com/transport/{z}/{x}/{y}.png",
 			opts: {maxZoom: 20, attribution: thunderforestAttr}},
 		outdoors: {name: "Outdoors",
-			url: "https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png",
+			url: "https://a.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png",
 			opts: {maxZoom: 20, attribution: thunderforestAttr}},
 		mapycz: {name: "mapy.cz (Outdoor)",
 			url: "https://mapserver.mapy.cz/turist-m/{z}-{x}-{y}",
@@ -66,5 +67,17 @@ var AdditionalMapLayers;
 		geoportail: {name: "Geoportail Aerial [FR]",
 			url: "https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=ORTHOIMAGERY.ORTHOPHOTOS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix={z}&TileCol={x}&TileRow={y}",
 			opts: {maxZoom: 20, maxNativeZoom: 19, attribution: geoportailAttr}},
+				swisstopo: {name: "Swisstopo Landeskarte [CH]",
+			url: "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg",
+			opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 18,  attribution: swisstopoAttr}},
+		swisstopoHiking: {name: "Swisstopo Wanderwege [CH]",
+			url: "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg",
+			opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 20, attribution: swisstopoAttr},
+			overlay: {
+				url: "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swisstlm3d-wanderwege/default/current/3857/{z}/{x}/{y}.png",
+				opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 20,keepBuffer: 4, attribution: swisstopoAttr, opacity: 0.9}}},
+		swisstopoAerial: {name: "Swisstopo Luftbild [CH]",
+			url: "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg",
+			opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 20, attribution: swisstopoAttr}},
 	};
 }
